@@ -246,6 +246,87 @@ $('clearAll').onclick=()=>{if(confirm('Permanently delete all posts and keywords
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['posts','keywords','reports','data'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab))});
 function autoMatchPosts(){posts=posts.map(p=>{let m=keywords.filter(k=>norm(p.text).includes(norm(k.term))).map(k=>k.term);return {...p,keywords:p.keywords||m.join('; ')}})}
 persist();renderKeywords();renderPosts();renderCheckStatus();
+// SocialDesk: dedicated searches for ANI, PTI and Pralhad Joshi across platforms.
+// Additive only: does not modify the existing keyword list or saved posts.
+(function addDedicatedMediaSearches(){
+  const host = document.getElementById('view-posts');
+  if (!host || document.getElementById('mediaSearchPanel')) return;
+
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.id = 'mediaSearchPanel';
+  panel.style.marginBottom = '14px';
+  panel.innerHTML = `
+    <h2>ANI / PTI / Pralhad Joshi — Media Search</h2>
+    <p class="muted">Education, students, exams, schools, colleges, universities and education-related coverage of Pralhad Joshi Ji. These are search links; they do not automatically import posts.</p>
+    <div class="grid2">
+      <div>
+        <label for="mediaSearchTarget">Source / topic</label>
+        <select id="mediaSearchTarget">
+          <option value="ani">ANI (@ANI) — education & students</option>
+          <option value="pti">PTI (@PTI_News) — education & students</option>
+          <option value="joshi">Pralhad Joshi Ji — education & students</option>
+          <option value="all">All: ANI + PTI + Pralhad Joshi Ji</option>
+        </select>
+      </div>
+      <div>
+        <label for="mediaSearchSort">X search order</label>
+        <select id="mediaSearchSort">
+          <option value="live">Latest posts</option>
+          <option value="top">Top posts</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" type="button" id="mediaBuildSearch">Build media search links</button>
+    </div>
+    <div id="mediaSearchResults" class="list">
+      <div class="empty">Choose a source/topic and click “Build media search links”.</div>
+    </div>`;
+  const launcher = host.querySelector('.panel');
+  if (launcher) launcher.insertAdjacentElement('afterend', panel);
+  else host.prepend(panel);
+
+  const queries = {
+    ani: '(education OR student OR students OR school OR university OR college OR exam OR UGC OR NCERT OR CBSE OR "Pralhad Joshi" OR "Prahlad Joshi") from:ANI',
+    pti: '(education OR student OR students OR school OR university OR college OR exam OR UGC OR NCERT OR CBSE OR "Pralhad Joshi" OR "Prahlad Joshi") from:PTI_News',
+    joshi: '("Pralhad Joshi" OR "Prahlad Joshi" OR JoshiPralhad) (education OR student OR students OR school OR university OR college OR exam OR UGC OR NCERT OR CBSE OR education ministry)',
+    all: '((education OR student OR students OR school OR university OR college OR exam OR UGC OR NCERT OR CBSE) (from:ANI OR from:PTI_News)) OR ("Pralhad Joshi" OR "Prahlad Joshi" OR JoshiPralhad) (education OR student OR students OR school OR university OR college OR exam OR UGC OR NCERT OR CBSE)'
+  };
+
+  function makeLink(name, url) {
+    return `<p><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(name)} ↗</a></p>`;
+  }
+
+  function build() {
+    const target = document.getElementById('mediaSearchTarget').value;
+    const sort = document.getElementById('mediaSearchSort').value;
+    const q = queries[target];
+    const xUrl = 'https://x.com/search?q=' + encodeURIComponent(q) +
+      '&src=typed_query' + (sort === 'live' ? '&f=live' : '');
+    const webQuery = target === 'ani' ? 'ANI education students "Pralhad Joshi"' :
+      target === 'pti' ? 'PTI education students "Pralhad Joshi"' :
+      target === 'joshi' ? '"Pralhad Joshi" education students' :
+      '(ANI OR PTI) education students "Pralhad Joshi"';
+    const encoded = encodeURIComponent(webQuery);
+    const ytQuery = target === 'ani' ? 'ANI education students Pralhad Joshi' :
+      target === 'pti' ? 'PTI education students Pralhad Joshi' :
+      target === 'joshi' ? 'Pralhad Joshi education students' :
+      'ANI PTI Pralhad Joshi education students';
+    const ytUrl = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(ytQuery);
+    const fbUrl = 'https://www.google.com/search?q=' + encodeURIComponent('site:facebook.com ' + webQuery);
+    const igUrl = 'https://www.google.com/search?q=' + encodeURIComponent('site:instagram.com ' + webQuery);
+    const title = document.getElementById('mediaSearchTarget').selectedOptions[0].textContent;
+    document.getElementById('mediaSearchResults').innerHTML =
+      `<article class="post"><strong>${esc(title)}</strong>` +
+      makeLink('Search on X (Twitter)', xUrl) +
+      makeLink('Search on YouTube', ytUrl) +
+      makeLink('Search public Facebook pages (Google-indexed)', fbUrl) +
+      makeLink('Search public Instagram posts/pages (Google-indexed)', igUrl) +
+      `<p class="muted">Facebook/Instagram Google results may be incomplete. Check the original account, date and post context before reporting.</p></article>`;
+  }
+  document.getElementById('mediaBuildSearch').addEventListener('click', build);
+})();
 </script>
 </body>
 </html>
