@@ -134,7 +134,7 @@ $('suggestClassification').onclick = async () => {
   btn.textContent = 'Gemini is analyzing…';
 
   try {
-    const response = await fetch('https://socialdesk-ai.akhandpratap93.workers.dev/', {
+    const response = await fetch('https://socialdesk-gemini-ai.akhandpratap93.workers.dev/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, url, account })
