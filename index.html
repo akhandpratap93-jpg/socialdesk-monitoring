@@ -76,7 +76,7 @@ label{display:block;font-weight:650;font-size:12px;margin:10px 0 5px;color:#3341
 <p class="muted">Google News RSS के जरिए सार्वजनिक समाचार लेख खोजें। यह X/Instagram/Facebook पोस्ट नहीं, बल्कि समाचार वेबसाइटों के लेख हैं। फीड की उपलब्धता और ताज़गी स्रोत पर निर्भर करती है।</p>
 <div class="grid2">
 <div><label for="articleGroup">Search category</label><select id="articleGroup"><option value="">All saved keyword groups</option><option>Ministry & officials</option><option>Exams</option><option>Institutions</option><option>Policies</option><option>Student issues</option><option>School Education</option><option>Higher Education</option></select></div>
-<div><label for="articlePeriod">Time period</label><select id="articlePeriod"><option value="1">Last 24 hours</option><option value="7" selected>Last 7 days</option><option value="30">Last 30 days</option></select></div>
+<div><label for="articlePeriod">Time period</label><select id="articlePeriod"><option value="4h">Last 4 hours</option><option value="1">Last 24 hours</option><option value="7" selected>Last 7 days</option><option value="30">Last 30 days</option></select></div>
 </div>
 <label for="articleQuery">Optional focused search (English / Hindi)</label><input id="articleQuery" placeholder="e.g. Ministry of Education India, UGC, NTA, NCERT">
 <div class="actions"><button class="btn primary" id="fetchArticles" type="button">Fetch news articles</button><button class="btn" id="clearArticles" type="button">Clear results</button></div>
@@ -93,7 +93,7 @@ label{display:block;font-weight:650;font-size:12px;margin:10px 0 5px;color:#3341
 <h2>AI News Briefing · हिंदी + English</h2>
 <p class="muted">यह अलग समाचार खोज सुविधा है। पहले सार्वजनिक समाचार परिणाम खोजे जाएँगे; AI विश्लेषण केवल चुनी हुई खबर पर चलेगा। कोई खबर अपने-आप Monitoring Feed में सेव नहीं होगी।</p>
 <div class="grid2">
-<div><label for="briefingPeriod">समय अवधि / Time period</label><select id="briefingPeriod"><option value="1">पिछले 24 घंटे / Last 24 hours</option><option value="7" selected>पिछले 7 दिन / Last 7 days</option><option value="30">पिछले 30 दिन / Last 30 days</option></select></div>
+<div><label for="briefingPeriod">समय अवधि / Time period</label><select id="briefingPeriod"><option value="4h">पिछले 4 घंटे / Last 4 hours</option><option value="1">पिछले 24 घंटे / Last 24 hours</option><option value="7" selected>पिछले 7 दिन / Last 7 days</option><option value="30">पिछले 30 दिन / Last 30 days</option></select></div>
 <div><label for="briefingScope">खोज क्षेत्र / Search scope</label><select id="briefingScope"><option value="all">सभी शिक्षा विषय / All education topics</option><option value="school">स्कूली शिक्षा / School education</option><option value="higher">उच्च शिक्षा / Higher education</option><option value="exams">परीक्षाएँ / Exams</option><option value="joshi">प्रल्हाद जोशी + शिक्षा / Pralhad Joshi + Education</option></select></div>
 </div>
 <label for="briefingQuery">अतिरिक्त विषय (वैकल्पिक) / Optional focused topic</label><input id="briefingQuery" placeholder="जैसे UGC NET, NTA, NCERT, IIT, CBSE">
@@ -391,7 +391,7 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
   try{
    const period=$b('briefingPeriod').value, scope=$b('briefingScope').value, focus=$b('briefingQuery').value.trim();
    const base=queries[scope]||queries.all;
-   const q=(focus?'('+base+' AND "'+focus.replace(/"/g,'')+'")':base)+' when:'+period+'d';
+   const q=(focus?'('+base+' AND "'+focus.replace(/"/g,'')+'")':base)+' when:'+period;
    const rss='https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-IN&gl=IN&ceid=IN:en';
    const api='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss);
    const response=await fetch(api,{headers:{'Accept':'application/json'}});
@@ -452,7 +452,7 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
    // Limit query size to keep RSS requests practical; users can run focused searches for specific terms.
    terms=[...new Set(terms.map(x=>String(x).trim()).filter(Boolean))].slice(0,12);
    if(!terms.length) terms=['Ministry of Education India','UGC','NTA','NCERT'];
-   const q='('+terms.map(t=>'"'+t.replace(/"/g,'')+'"').join(' OR ')+') when:'+period+'d';
+   const q='('+terms.map(t=>'"'+t.replace(/"/g,'')+'"').join(' OR ')+') when:'+period;
    return q;
  }
  function render(){
