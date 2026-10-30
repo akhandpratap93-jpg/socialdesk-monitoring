@@ -70,6 +70,24 @@ label{display:block;font-weight:650;font-size:12px;margin:10px 0 5px;color:#3341
 </div>
 <div class="panel" style="margin-top:14px"><div class="posthead"><h2 style="margin:0">Monitoring results</h2><span id="resultCount" class="muted">0 posts</span></div><div id="postList" class="list"></div></div>
 </section>
+<section id="view-articles" class="hidden">
+<div class="panel" style="margin-bottom:14px">
+<h2>News & Articles Monitoring</h2>
+<p class="muted">Google News RSS के जरिए सार्वजनिक समाचार लेख खोजें। यह X/Instagram/Facebook पोस्ट नहीं, बल्कि समाचार वेबसाइटों के लेख हैं। फीड की उपलब्धता और ताज़गी स्रोत पर निर्भर करती है।</p>
+<div class="grid2">
+<div><label for="articleGroup">Search category</label><select id="articleGroup"><option value="">All saved keyword groups</option><option>Ministry & officials</option><option>Exams</option><option>Institutions</option><option>Policies</option><option>Student issues</option><option>School Education</option><option>Higher Education</option></select></div>
+<div><label for="articlePeriod">Time period</label><select id="articlePeriod"><option value="1">Last 24 hours</option><option value="7" selected>Last 7 days</option><option value="30">Last 30 days</option></select></div>
+</div>
+<label for="articleQuery">Optional focused search (English / Hindi)</label><input id="articleQuery" placeholder="e.g. Ministry of Education India, UGC, NTA, NCERT">
+<div class="actions"><button class="btn primary" id="fetchArticles" type="button">Fetch news articles</button><button class="btn" id="clearArticles" type="button">Clear results</button></div>
+<div id="articleStatus" class="muted" style="margin-top:10px" aria-live="polite">Click “Fetch news articles” to search. Articles are not saved automatically.</div>
+</div>
+<div class="panel">
+<div class="posthead"><h2 style="margin:0">Article results</h2><span id="articleCount" class="muted">0 articles</span></div>
+<div id="articleList" class="list"><div class="empty">No articles fetched yet.</div></div>
+</div>
+<div class="topnote" style="margin-top:14px"><strong>Editorial check:</strong> RSS keyword matches are only discovery leads. Verify the publisher, date, full article and actual Ministry connection before marking Direct Relevance. Joshi ji's name alone does not make an article Education Ministry-related.</div>
+</section>
 <section id="view-keywords" class="hidden">
 <div class="layout">
 <div class="topnote"><strong>Education + Pralhad Joshi keyword set:</strong> Curated keywords are preloaded by category. Joshi ji also handles other portfolios, so a post mentioning his name alone is not automatically Education Ministry-relevant; verify the post context before marking it Direct.</div>
@@ -243,7 +261,7 @@ $('downloadTemplate').onclick=()=>download('socialdesk_csv_template.csv',makeCsv
 $('backupJson').onclick=()=>download('socialdesk_backup_'+today()+'.json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),keywords,posts},null,2),'application/json');
 $('restoreFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.posts)||!Array.isArray(d.keywords))throw Error();const mode=prompt('Restore mode: type MERGE to preserve current data and add/replace matching IDs/URLs, or REPLACE to replace everything. Cancel to stop.','MERGE');if(!mode)return;if(mode.toUpperCase()==='MERGE'){const pm=new Map(posts.map(p=>[norm((p.url||p.id||'').split('?')[0]),p]));for(const p of d.posts){const k=norm((p.url||p.id||'').split('?')[0]);if(k)pm.set(k,{...(pm.get(k)||{}),...p,important:!!(p.important||(pm.get(k)||{}).important)});}posts=[...pm.values()];const km=new Map(keywords.map(k=>[norm(k.term),k]));d.keywords.forEach(k=>km.set(norm(k.term),{...(km.get(norm(k.term))||{}),...k}));keywords=[...km.values()];}else if(mode.toUpperCase()==='REPLACE'){if(!confirm('This replaces all current local posts and keywords. Continue?'))return;posts=d.posts;keywords=d.keywords;}else{ $('backupMessage').textContent='Restore cancelled: enter MERGE or REPLACE.';return;}persist();renderPosts();renderKeywords();$('backupMessage').textContent='Backup restored using '+mode.toUpperCase()+'.';}catch{$('backupMessage').textContent='Invalid backup file. No changes made.'}e.target.value=''});
 $('clearAll').onclick=()=>{if(confirm('Permanently delete all posts and keywords from this browser? Download a backup first if needed.')){posts=[];keywords=[];persist();renderPosts();renderKeywords();$('backupMessage').textContent='Local data deleted.'}};
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['posts','keywords','reports','data'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab))});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['posts','articles','keywords','reports','data'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab))});
 function autoMatchPosts(){posts=posts.map(p=>{let m=keywords.filter(k=>norm(p.text).includes(norm(k.term))).map(k=>k.term);return {...p,keywords:p.keywords||m.join('; ')}})}
 persist();renderKeywords();renderPosts();renderCheckStatus();
 // SocialDesk: dedicated searches for ANI, PTI and Pralhad Joshi across platforms.
@@ -326,6 +344,71 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
       `<p class="muted">Facebook/Instagram Google results may be incomplete. Check the original account, date and post context before reporting.</p></article>`;
   }
   document.getElementById('mediaBuildSearch').addEventListener('click', build);
+})();
+
+/* Additive News & Articles feature. Keeps existing post/keyword storage untouched. */
+(function initNewsArticles(){
+ const tab=document.querySelector('.tab[data-tab="articles"]');
+ if(!tab || document.getElementById('articleGroup')===null) return;
+ let results=[];
+ const el=id=>document.getElementById(id);
+ const escText=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function buildQuery(){
+   const focused=el('articleQuery').value.trim();
+   const group=el('articleGroup').value;
+   const period=el('articlePeriod').value;
+   let terms=focused?[focused]:keywords.filter(k=>!group||k.group===group).map(k=>k.term);
+   // Limit query size to keep RSS requests practical; users can run focused searches for specific terms.
+   terms=[...new Set(terms.map(x=>String(x).trim()).filter(Boolean))].slice(0,12);
+   if(!terms.length) terms=['Ministry of Education India','UGC','NTA','NCERT'];
+   const q='('+terms.map(t=>'"'+t.replace(/"/g,'')+'"').join(' OR ')+') when:'+period+'d';
+   return q;
+ }
+ function render(){
+   el('articleCount').textContent=results.length+' articles';
+   if(!results.length){el('articleList').innerHTML='<div class="empty">No articles found. Try a focused search or another time period.</div>';return}
+   el('articleList').innerHTML=results.map((a,i)=>'<article class="post"><div class="posthead"><strong>'+escText(a.source||'News source')+'</strong><span class="muted">'+escText(a.date||'Date unavailable')+'</span></div><div class="posttext"><strong>'+escText(a.title)+'</strong></div>'+(a.description?'<p>'+escText(a.description)+'</p>':'')+'<p><a href="'+escText(a.url)+'" target="_blank" rel="noopener noreferrer">Open original article ↗</a></p><div class="actions"><button class="btn primary small" type="button" data-save-article="'+i+'">Save to Monitoring Feed</button></div><div class="muted" style="margin-top:6px">Discovery match only · Review relevance and sentiment before reporting</div></article>').join('');
+   el('articleList').querySelectorAll('[data-save-article]').forEach(b=>b.addEventListener('click',()=>saveArticle(Number(b.dataset.saveArticle))));
+ }
+ function saveArticle(i){
+   const a=results[i]; if(!a)return;
+   const url=a.url||''; if(!url){alert('Original article URL missing.');return}
+   const existing=posts.find(p=>norm((p.url||'').split('?')[0])===norm(url.split('?')[0]));
+   if(existing){alert('This article URL is already in Monitoring Feed.');return}
+   const p={id:id(),url,text:[a.title,a.description].filter(Boolean).join('\n\n'),account:a.source||'News article',date:a.dateISO||today(),relevance:'Review Needed',sentiment:'Neutral',category:'News Article',group:'Other',brief:'News article discovered through Google News RSS. Verify full article and Ministry relevance before reporting.',keywords:'',addedAt:new Date().toISOString(),updated:new Date().toISOString(),sourceType:'article'};
+   posts.unshift(p);persist();renderPosts();
+   alert('Article saved to Monitoring Feed as Review Needed / Neutral. Please verify before reporting.');
+ }
+ async function fetchArticles(){
+   const btn=el('fetchArticles');btn.disabled=true;btn.textContent='Searching…';
+   el('articleStatus').textContent='Searching Google News RSS. Please wait…';
+   results=[];render();
+   try{
+     const q=buildQuery();
+     const rss='https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-IN&gl=IN&ceid=IN:en';
+     const api='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss);
+     const response=await fetch(api,{headers:{'Accept':'application/json'}});
+     if(!response.ok) throw new Error('News feed service returned HTTP '+response.status);
+     const data=await response.json();
+     if(data.status!=='ok'||!Array.isArray(data.items)) throw new Error(data.message||'RSS feed could not be read');
+     const seen=new Set();
+     results=data.items.map(x=>{
+       const link=String(x.link||'').trim();
+       const title=String(x.title||'').trim();
+       if(!link||!title)return null;
+       const key=link.split('?')[0];if(seen.has(key))return null;seen.add(key);
+       const dt=x.pubDate?new Date(x.pubDate):null;
+       return {title,url:link,description:String(x.description||'').replace(/<[^>]*>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').trim().slice(0,500),source:String(x.author||x.source||'News website'),date:dt&&!isNaN(dt)?dt.toLocaleString():'Date unavailable',dateISO:dt&&!isNaN(dt)?dt.toLocaleDateString('en-CA'):today()};
+     }).filter(Boolean).slice(0,60);
+     el('articleStatus').textContent=results.length+' article(s) found. Articles are not saved automatically; review and save only relevant ones.';
+     render();
+   }catch(e){
+     el('articleStatus').textContent='Articles could not be loaded: '+(e.message||'Feed unavailable')+'. This may be a temporary RSS/proxy or browser-network issue. No existing data was changed.';
+     render();
+   }finally{btn.disabled=false;btn.textContent='Fetch news articles'}
+ }
+ el('fetchArticles').addEventListener('click',fetchArticles);
+ el('clearArticles').addEventListener('click',()=>{results=[];render();el('articleStatus').textContent='Results cleared. Your saved posts and keywords are unchanged.'});
 })();
 </script>
 </body>
