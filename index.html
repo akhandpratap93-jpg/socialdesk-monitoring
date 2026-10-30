@@ -31,7 +31,7 @@ label{display:block;font-weight:650;font-size:12px;margin:10px 0 5px;color:#3341
  <div class="stat"><span>Today's posts</span><strong id="statToday">0</strong></div>
 </div>
 <nav class="tabs">
-<button class="tab active" data-tab="posts">Posts & Monitoring</button><button class="tab" data-tab="articles">News & Articles</button><button class="tab" data-tab="keywords">Keywords</button><button class="tab" data-tab="reports">Daily Report</button><button class="tab" data-tab="data">Import / Backup</button>
+<button class="tab active" data-tab="posts">Posts & Monitoring</button><button class="tab" data-tab="articles">News & Articles</button><button class="tab" data-tab="briefing">AI News Briefing</button><button class="tab" data-tab="keywords">Keywords</button><button class="tab" data-tab="reports">Daily Report</button><button class="tab" data-tab="data">Import / Backup</button>
 </nav>
 <section id="view-posts">
 <div class="panel" style="margin-bottom:14px">
@@ -76,7 +76,7 @@ label{display:block;font-weight:650;font-size:12px;margin:10px 0 5px;color:#3341
 <p class="muted">Google News RSS के जरिए सार्वजनिक समाचार लेख खोजें। यह X/Instagram/Facebook पोस्ट नहीं, बल्कि समाचार वेबसाइटों के लेख हैं। फीड की उपलब्धता और ताज़गी स्रोत पर निर्भर करती है।</p>
 <div class="grid2">
 <div><label for="articleGroup">Search category</label><select id="articleGroup"><option value="">All saved keyword groups</option><option>Ministry & officials</option><option>Exams</option><option>Institutions</option><option>Policies</option><option>Student issues</option><option>School Education</option><option>Higher Education</option></select></div>
-<div><label for="articlePeriod">Time period</label><select id="articlePeriod"><option value="1">Last 24 hours</option><option value="7" selected>Last 7 days</option><option value="30">Last 30 days</option></select></div>
+<div><label for="articlePeriod">Time period</label><select id="articlePeriod"><option value="4h">Last 4 hours</option><option value="1">Last 24 hours</option><option value="7" selected>Last 7 days</option><option value="30">Last 30 days</option></select></div>
 </div>
 <label for="articleQuery">Optional focused search (English / Hindi)</label><input id="articleQuery" placeholder="e.g. Ministry of Education India, UGC, NTA, NCERT">
 <div class="actions"><button class="btn primary" id="fetchArticles" type="button">Fetch news articles</button><button class="btn" id="clearArticles" type="button">Clear results</button></div>
@@ -87,6 +87,24 @@ label{display:block;font-weight:650;font-size:12px;margin:10px 0 5px;color:#3341
 <div id="articleList" class="list"><div class="empty">No articles fetched yet.</div></div>
 </div>
 <div class="topnote" style="margin-top:14px"><strong>Editorial check:</strong> RSS keyword matches are only discovery leads. Verify the publisher, date, full article and actual Ministry connection before marking Direct Relevance. Joshi ji's name alone does not make an article Education Ministry-related.</div>
+</section>
+<section id="view-briefing" class="hidden">
+<div class="panel" style="margin-bottom:14px">
+<h2>AI News Briefing · हिंदी + English</h2>
+<p class="muted">यह अलग समाचार खोज सुविधा है। पहले सार्वजनिक समाचार परिणाम खोजे जाएँगे; AI विश्लेषण केवल चुनी हुई खबर पर चलेगा। कोई खबर अपने-आप Monitoring Feed में सेव नहीं होगी।</p>
+<div class="grid2">
+<div><label for="briefingPeriod">समय अवधि / Time period</label><select id="briefingPeriod"><option value="4h">पिछले 4 घंटे / Last 4 hours</option><option value="1">पिछले 24 घंटे / Last 24 hours</option><option value="7" selected>पिछले 7 दिन / Last 7 days</option><option value="30">पिछले 30 दिन / Last 30 days</option></select></div>
+<div><label for="briefingScope">खोज क्षेत्र / Search scope</label><select id="briefingScope"><option value="all">सभी शिक्षा विषय / All education topics</option><option value="school">स्कूली शिक्षा / School education</option><option value="higher">उच्च शिक्षा / Higher education</option><option value="exams">परीक्षाएँ / Exams</option><option value="joshi">प्रल्हाद जोशी + शिक्षा / Pralhad Joshi + Education</option></select></div>
+</div>
+<label for="briefingQuery">अतिरिक्त विषय (वैकल्पिक) / Optional focused topic</label><input id="briefingQuery" placeholder="जैसे UGC NET, NTA, NCERT, IIT, CBSE">
+<div class="actions"><button class="btn primary" id="runBriefing" type="button">खबरें खोजें / Search news</button><button class="btn" id="clearBriefing" type="button">Clear</button></div>
+<div id="briefingStatus" class="muted" style="margin-top:10px" aria-live="polite">Search दबाकर सार्वजनिक समाचार खोजें।</div>
+</div>
+<div class="panel">
+<div class="posthead"><h2 style="margin:0">खबरें / News results</h2><span id="briefingCount" class="muted">0 results</span></div>
+<div id="briefingList" class="list"><div class="empty">अभी कोई खबर नहीं मिली / No news searched yet.</div></div>
+</div>
+<div class="topnote" style="margin-top:14px"><strong>महत्वपूर्ण:</strong> समाचार खोज के परिणाम केवल शुरुआती संकेत हैं। Direct Relevance तभी मानें जब खबर का वास्तविक संबंध केंद्रीय शिक्षा मंत्रालय/उसके विभागों या संस्थानों से हो। NEET-PG जैसे स्वास्थ्य विषय और केवल नाम से Joshi ji से जुड़ी खबरें स्वतः Direct नहीं मानी जाएँगी।</div>
 </section>
 <section id="view-keywords" class="hidden">
 <div class="layout">
@@ -261,7 +279,7 @@ $('downloadTemplate').onclick=()=>download('socialdesk_csv_template.csv',makeCsv
 $('backupJson').onclick=()=>download('socialdesk_backup_'+today()+'.json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),keywords,posts},null,2),'application/json');
 $('restoreFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.posts)||!Array.isArray(d.keywords))throw Error();const mode=prompt('Restore mode: type MERGE to preserve current data and add/replace matching IDs/URLs, or REPLACE to replace everything. Cancel to stop.','MERGE');if(!mode)return;if(mode.toUpperCase()==='MERGE'){const pm=new Map(posts.map(p=>[norm((p.url||p.id||'').split('?')[0]),p]));for(const p of d.posts){const k=norm((p.url||p.id||'').split('?')[0]);if(k)pm.set(k,{...(pm.get(k)||{}),...p,important:!!(p.important||(pm.get(k)||{}).important)});}posts=[...pm.values()];const km=new Map(keywords.map(k=>[norm(k.term),k]));d.keywords.forEach(k=>km.set(norm(k.term),{...(km.get(norm(k.term))||{}),...k}));keywords=[...km.values()];}else if(mode.toUpperCase()==='REPLACE'){if(!confirm('This replaces all current local posts and keywords. Continue?'))return;posts=d.posts;keywords=d.keywords;}else{ $('backupMessage').textContent='Restore cancelled: enter MERGE or REPLACE.';return;}persist();renderPosts();renderKeywords();$('backupMessage').textContent='Backup restored using '+mode.toUpperCase()+'.';}catch{$('backupMessage').textContent='Invalid backup file. No changes made.'}e.target.value=''});
 $('clearAll').onclick=()=>{if(confirm('Permanently delete all posts and keywords from this browser? Download a backup first if needed.')){posts=[];keywords=[];persist();renderPosts();renderKeywords();$('backupMessage').textContent='Local data deleted.'}};
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['posts','articles','keywords','reports','data'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab))});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['posts','articles','briefing','keywords','reports','data'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab))});
 function autoMatchPosts(){posts=posts.map(p=>{let m=keywords.filter(k=>norm(p.text).includes(norm(k.term))).map(k=>k.term);return {...p,keywords:p.keywords||m.join('; ')}})}
 persist();renderKeywords();renderPosts();renderCheckStatus();
 // SocialDesk: dedicated searches for ANI, PTI and Pralhad Joshi across platforms.
@@ -346,6 +364,79 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
   document.getElementById('mediaBuildSearch').addEventListener('click', build);
 })();
 
+
+/* Additive AI News Briefing. Search results stay in memory; saved monitoring data is untouched. */
+(function initAIBriefing(){
+ const $b=id=>document.getElementById(id);
+ const host=$b('briefingList'); if(!host)return;
+ let items=[];
+ const escB=v=>String(v||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const queries={
+  all:'("Ministry of Education India" OR UGC OR NTA OR NCERT OR CBSE OR KVS OR NVS OR NIOS OR AICTE OR IIT OR "higher education" OR "school education")',
+  school:'("school education" OR DoSEL OR CBSE OR NCERT OR KVS OR NVS OR NIOS)',
+  higher:'("higher education" OR UGC OR AICTE OR IIT OR IIM OR IISER OR NIT OR university)',
+  exams:'(NTA OR UGC NET OR CUET OR JEE OR NEET OR "exam paper leak")',
+  joshi:'("Pralhad Joshi" AND (education OR UGC OR NTA OR NCERT OR university))'
+ };
+ function render(){
+  $b('briefingCount').textContent=items.length+' results';
+  if(!items.length){host.innerHTML='<div class="empty">कोई खबर नहीं मिली / No results.</div>';return;}
+  host.innerHTML=items.map((a,i)=>'<article class="post" id="briefing-item-'+i+'"><div class="posthead"><strong>'+escB(a.source||'News source')+'</strong><span class="muted">'+escB(a.date||'Date unavailable')+'</span></div><div class="posttext"><strong>'+escB(a.title)+'</strong></div>'+(a.description?'<p>'+escB(a.description)+'</p>':'')+'<p><a href="'+escB(a.url)+'" target="_blank" rel="noopener noreferrer">मूल खबर पढ़ें / Read original ↗</a></p><div class="actions"><button class="btn primary small" data-analyse="'+i+'" type="button">AI Brief बनाएं / Generate AI brief</button><button class="btn small" data-save-brief="'+i+'" type="button">Monitoring Feed में Save</button></div><div class="muted" id="briefing-ai-'+i+'" style="margin-top:8px">AI analysis अभी नहीं हुआ / Not analysed yet.</div></article>').join('');
+  host.querySelectorAll('[data-analyse]').forEach(b=>b.addEventListener('click',()=>analyse(Number(b.dataset.analyse),b)));
+  host.querySelectorAll('[data-save-brief]').forEach(b=>b.addEventListener('click',()=>save(Number(b.dataset.saveBrief))));
+ }
+ async function search(){
+  const btn=$b('runBriefing');btn.disabled=true;btn.textContent='खोज जारी है / Searching…';
+  $b('briefingStatus').textContent='समाचार स्रोत खोजे जा रहे हैं… / Searching public news feed…';items=[];render();
+  try{
+   const period=$b('briefingPeriod').value, scope=$b('briefingScope').value, focus=$b('briefingQuery').value.trim();
+   const base=queries[scope]||queries.all;
+   const q=(focus?'('+base+' AND "'+focus.replace(/"/g,'')+'")':base)+' when:'+period;
+   const rss='https://news.google.com/rss/search?q='+encodeURIComponent(q)+'&hl=en-IN&gl=IN&ceid=IN:en';
+   const api='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss);
+   const response=await fetch(api,{headers:{'Accept':'application/json'}});
+   if(!response.ok)throw new Error('Feed service HTTP '+response.status);
+   const data=await response.json();if(data.status!=='ok'||!Array.isArray(data.items))throw new Error(data.message||'Feed unavailable');
+   const seen=new Set();
+   items=data.items.map(x=>{
+    const url=String(x.link||'').trim(),title=String(x.title||'').trim(),key=url.split('?')[0];
+    if(!url||!title||seen.has(key))return null;seen.add(key);
+    const dt=x.pubDate?new Date(x.pubDate):null;
+    return {url,title,description:String(x.description||'').replace(/<[^>]*>/g,' ').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').trim().slice(0,700),source:String(x.author||x.source||'News publisher'),date:dt&&!isNaN(dt)?dt.toLocaleString():'Date unavailable',dateISO:dt&&!isNaN(dt)?dt.toLocaleDateString('en-CA'):today(),analysis:null};
+   }).filter(Boolean).slice(0,30);
+   $b('briefingStatus').textContent=items.length+' खबरें मिलीं। AI brief प्रत्येक खबर के लिए अलग से चलाएँ। / Found '+items.length+' items. Run AI analysis per story.';
+   render();
+  }catch(e){$b('briefingStatus').textContent='खबरें लोड नहीं हुईं: '+(e.message||'temporary error')+'. कोई saved data नहीं बदला। / Search failed; saved data is unchanged.';render();}
+  finally{btn.disabled=false;btn.textContent='खबरें खोजें / Search news';}
+ }
+ async function analyse(i,btn){
+  const a=items[i];if(!a)return;
+  const out=$b('briefing-ai-'+i),old=btn.textContent;btn.disabled=true;btn.textContent='AI काम कर रहा है…';
+  out.textContent='Gemini Worker से संपर्क हो रहा है… / Contacting configured AI service…';
+  const instruction='You are an editor for Indian Union Ministry of Education monitoring. Analyse this NEWS ARTICLE. Return concise JSON with fields relevance (exactly Direct Relevance, Indirect Relevance, Not Relevant, or Review Needed), sentiment (Positive, Negative, Neutral, or Mixed), category, brief. The brief MUST contain both Hindi and English, each 2-3 short lines, clearly labelled Hindi and English. Be conservative: name Pralhad Joshi alone is not enough for Direct; verify actual education connection. NEET-PG is Health, not Ministry of Education. If source/date/context is insufficient use Review Needed. Article title and snippet follow: ';
+  try{
+   const response=await fetch('https://socialdesk-gemini-ai.akhandpratap93.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:instruction+'\nTitle: '+a.title+'\nSnippet: '+a.description,url:a.url,account:a.source||'News article'})});
+   let data;try{data=await response.json()}catch{throw new Error('AI service ने valid JSON नहीं दिया / Invalid JSON response');}
+   if(!response.ok||data.error)throw new Error(data.details||data.error||('HTTP '+response.status));
+   const rel=['Direct Relevance','Indirect Relevance','Not Relevant','Review Needed'].includes(data.relevance)?data.relevance:'Review Needed';
+   const sent=['Positive','Negative','Neutral','Mixed'].includes(data.sentiment)?data.sentiment:'Neutral';
+   a.analysis={relevance:rel,sentiment:sent,category:String(data.category||'News'),brief:String(data.brief||'AI brief unavailable')};
+   out.innerHTML='<strong>'+escB(rel)+' · '+escB(sent)+'</strong><p>'+escB(a.analysis.brief).replace(/\n/g,'<br>')+'</p><span class="muted">AI suggestion only — verify original article before reporting.</span>';
+  }catch(e){out.textContent='AI Briefing उपलब्ध नहीं: '+e.message+'. खबरें और saved data सुरक्षित हैं। / AI service unavailable; no saved data changed.';}
+  finally{btn.disabled=false;btn.textContent=old;}
+ }
+ function save(i){
+  const a=items[i];if(!a)return;
+  if(!a.url){alert('Original URL missing.');return;}
+  if(posts.some(p=>norm((p.url||'').split('?')[0])===norm(a.url.split('?')[0]))){alert('यह खबर पहले से Monitoring Feed में है।');return;}
+  const an=a.analysis||{};
+  const p={id:id(),url:a.url,text:[a.title,a.description].filter(Boolean).join('\n\n'),account:a.source||'News article',date:a.dateISO||today(),relevance:an.relevance||'Review Needed',sentiment:an.sentiment||'Neutral',category:an.category||'News Article',group:'Other',brief:an.brief||'AI analysis not run. Verify source and Ministry relevance before reporting.',keywords:'',addedAt:new Date().toISOString(),updated:new Date().toISOString(),sourceType:'article'};
+  posts.unshift(p);persist();renderPosts();alert('खबर Monitoring Feed में जोड़ी गई है। Relevance/brief की पुष्टि करें।');
+ }
+ $b('runBriefing').addEventListener('click',search);
+ $b('clearBriefing').addEventListener('click',()=>{items=[];render();$b('briefingStatus').textContent='Results cleared. Saved posts and keywords unchanged.';});
+})();
+
 /* Additive News & Articles feature. Keeps existing post/keyword storage untouched. */
 (function initNewsArticles(){
  const tab=document.querySelector('.tab[data-tab="articles"]');
@@ -361,7 +452,7 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
    // Limit query size to keep RSS requests practical; users can run focused searches for specific terms.
    terms=[...new Set(terms.map(x=>String(x).trim()).filter(Boolean))].slice(0,12);
    if(!terms.length) terms=['Ministry of Education India','UGC','NTA','NCERT'];
-   const q='('+terms.map(t=>'"'+t.replace(/"/g,'')+'"').join(' OR ')+') when:'+period+'d';
+   const q='('+terms.map(t=>'"'+t.replace(/"/g,'')+'"').join(' OR ')+') when:'+period;
    return q;
  }
  function render(){
