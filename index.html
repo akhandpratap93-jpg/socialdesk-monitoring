@@ -20,8 +20,27 @@ label{display:block;font-weight:650;font-size:12px;margin:10px 0 5px;color:#3341
 </style>
 </head>
 <body>
-<header><div class="brand">SocialDesk <small>Education Ministry Monitoring Portal · Local-first</small></div><div><span id="savedStatus">● Saved in this browser</span></div></header>
+<header><div class="brand">SocialDesk <small>Education Ministry Monitoring Portal · Admin cloud sync</small></div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span id="savedStatus">● Saved in this browser</span><button class="btn small" id="adminLoginBtn" type="button">Admin Login</button><button class="btn small hidden" id="adminLogoutBtn" type="button">Logout</button></div></header>
 <main class="wrap">
+<div id="adminPanel" class="panel" style="margin-bottom:14px">
+ <h2>Admin access · Secure cloud sync</h2>
+ <form id="adminLoginForm">
+  <label for="adminPassword">Admin password</label>
+  <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Enter your Admin Password" required>
+  <div class="actions"><button class="btn primary" type="submit" id="adminLoginSubmit">Login</button></div>
+ </form>
+ <div id="adminControls" class="hidden">
+  <p id="adminStatus" class="muted">Admin session active.</p>
+  <p id="cloudCounts" class="muted"></p>
+  <div class="actions">
+   <button class="btn" id="refreshCloudBtn" type="button">Refresh cloud data</button>
+   <button class="btn" id="mergeCloudBtn" type="button">Create backup + Merge local & cloud</button>
+   <button class="btn primary" id="saveCloudBtn" type="button" disabled>Save merged data to Cloud</button>
+  </div>
+  <p class="muted">Safety: Login and refresh only read cloud data. Merge first downloads a local backup and combines records without deleting unique entries. Cloud is changed only when you click “Save merged data to Cloud”.</p>
+ </div>
+ <p id="adminMessage" class="muted" aria-live="polite">Public visitors can use search links. Only the admin can edit and sync data.</p>
+</div>
 <div class="topnote"><strong>Free prototype:</strong> Your entries are saved in this browser on this device. Live automatic collection is not connected. Use the X / other-platform search links to find posts, then add them manually or import a CSV. Negative education-relevant posts are prioritized in the default list order.</div>
 <div class="panel" style="margin-bottom:14px"><div class="posthead"><div><strong>Last checked:</strong> <span id="lastChecked">Not recorded yet</span> <span class="muted">· manual check only; no background X polling</span></div><button class="btn" id="markChecked" type="button">Mark checked now</button></div><div class="muted" style="margin-top:6px"><span id="newPostCount">0</span> posts added/imported in the last 24 hours</div></div>
 <div class="stats">
@@ -507,43 +526,156 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
 
 <!-- SOCIALDESK_PUBLIC_READ_ONLY_V1 -->
 <style id="socialdesk-public-readonly-style">
-  /* Public visitors can use preset search tools, but not edit portal content. */
-  #markChecked,
-  #view-posts .layout > .panel:first-child,
-  #view-posts #findDuplicates,
-  #view-posts #removeDuplicates,
-  #view-keywords,
-  #view-data,
-  #view-reports,
-  #view-posts #duplicateResults,
-  #view-briefing [data-save-brief],
-  #view-briefing #clearBriefing,
-  #view-articles #clearArticles,
-  .tabs button[data-tab="keywords"],
-  .tabs button[data-tab="data"],
-  .tabs button[data-tab="reports"] { display:none !important; }
-  #postList .post .posthead .actions { display:none !important; }
-  #view-posts .layout { grid-template-columns:1fr !important; }
-  #socialdeskPublicReadOnly {
-    margin:0 0 14px;padding:12px 14px;border:1px solid #b7c9f5;
-    background:#eef4ff;border-radius:12px;color:#1e3a8a;font-weight:600;
-  }
+ body:not(.admin-mode) #markChecked,
+ body:not(.admin-mode) #view-posts .layout > .panel:first-child,
+ body:not(.admin-mode) #view-posts #findDuplicates,
+ body:not(.admin-mode) #view-posts #removeDuplicates,
+ body:not(.admin-mode) #view-keywords,
+ body:not(.admin-mode) #view-data,
+ body:not(.admin-mode) #view-reports,
+ body:not(.admin-mode) #view-posts #duplicateResults,
+ body:not(.admin-mode) #view-briefing [data-save-brief],
+ body:not(.admin-mode) #view-briefing #clearBriefing,
+ body:not(.admin-mode) #view-articles #clearArticles,
+ body:not(.admin-mode) .tabs button[data-tab="keywords"],
+ body:not(.admin-mode) .tabs button[data-tab="data"],
+ body:not(.admin-mode) .tabs button[data-tab="reports"] { display:none !important; }
+ body:not(.admin-mode) #postList .post .posthead .actions { display:none !important; }
+ body:not(.admin-mode) #view-posts .layout { grid-template-columns:1fr !important; }
+ body.admin-mode #markChecked,
+ body.admin-mode #view-posts .layout > .panel:first-child,
+ body.admin-mode #view-posts #findDuplicates,
+ body.admin-mode #view-posts #removeDuplicates,
+ body.admin-mode #view-posts #duplicateResults,
+ body.admin-mode #view-briefing [data-save-brief],
+ body.admin-mode #view-briefing #clearBriefing,
+ body.admin-mode #view-articles #clearArticles,
+ body.admin-mode .tabs button[data-tab="keywords"],
+ body.admin-mode .tabs button[data-tab="data"],
+ body.admin-mode .tabs button[data-tab="reports"] { display:initial !important; }
+ body.admin-mode #view-posts .layout { grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr) !important; }
+ body.admin-mode #postList .post .posthead .actions { display:flex !important; }
+ body.admin-mode #view-keywords:not(.hidden),
+ body.admin-mode #view-data:not(.hidden),
+ body.admin-mode #view-reports:not(.hidden) { display:block !important; }
+ body.admin-mode #view-keywords.hidden,
+ body.admin-mode #view-data.hidden,
+ body.admin-mode #view-reports.hidden { display:none !important; }
+ #socialdeskPublicReadOnly { margin:0 0 14px;padding:12px 14px;border:1px solid #b7c9f5;background:#eef4ff;border-radius:12px;color:#1e3a8a;font-weight:600; }
+ body.admin-mode #socialdeskPublicReadOnly { border-color:#a7d7b8;background:#effaf2;color:#17603a; }
 </style>
 <script>
 (function socialdeskPublicReadOnly(){
-  if (document.getElementById('socialdeskPublicReadOnly')) return;
-  const note=document.createElement('div');
-  note.id='socialdeskPublicReadOnly';
-  note.textContent='🔒 Public Access – Search Only | Editing Restricted to Admin';
-  const main=document.querySelector('main.wrap');
-  if(main) main.insertBefore(note,main.firstChild);
-  // Remove the briefing action that would write search results into saved monitoring data.
-  document.querySelectorAll('#view-briefing [data-save-brief]').forEach(el=>el.remove());
-  // Make the public-facing editing routes unavailable through ordinary page controls.
-  document.querySelectorAll('.tabs button[data-tab="keywords"], .tabs button[data-tab="data"], .tabs button[data-tab="reports"]').forEach(el=>el.remove());
+ if(document.getElementById('socialdeskPublicReadOnly')) return;
+ const note=document.createElement('div');note.id='socialdeskPublicReadOnly';
+ note.textContent='🔒 Public Access – Search Only | Editing Restricted to Admin';
+ const main=document.querySelector('main.wrap');if(main)main.insertBefore(note,main.firstChild);
 })();
 </script>
 <!-- /SOCIALDESK_PUBLIC_READ_ONLY_V1 -->
+<script>
+(function socialdeskAdminCloud(){
+ const API='https://socialdesk-admin-api.akhandpratap93.workers.dev';
+ const $=id=>document.getElementById(id);
+ const state={token:'',loggedIn:false,cloudData:null,mergeDone:false,dirty:false};
+ const tokenKey='socialdesk_admin_session_v1';
+ const countLabel=(d)=>'Cloud: '+(d?.posts?.length||0)+' posts · '+(d?.keywords?.length||0)+' keywords | This browser: '+posts.length+' posts · '+keywords.length+' keywords';
+ function showMessage(t,isError=false){$('adminMessage').textContent=t;$('adminMessage').style.color=isError?'#b42318':''}
+ function setMode(on){
+  state.loggedIn=on;document.body.classList.toggle('admin-mode',on);
+  $('adminLogoutBtn').classList.toggle('hidden',!on);
+  $('adminLoginBtn').classList.toggle('hidden',on);
+  $('adminLoginForm').classList.toggle('hidden',on);
+  $('adminControls').classList.toggle('hidden',!on);
+  $('socialdeskPublicReadOnly').textContent=on?'🔓 Admin session active · Editing enabled for this session':'🔒 Public Access – Search Only | Editing Restricted to Admin';
+ }
+ async function request(path,options={}){
+  const headers={'Content-Type':'application/json',...(options.headers||{})};
+  if(state.token)headers.Authorization='Bearer '+state.token;
+  const res=await fetch(API+path,{...options,headers});
+  let data={};try{data=await res.json()}catch{}
+  if(!res.ok)throw new Error(data.error||('HTTP '+res.status));
+  return data;
+ }
+ function updateCloudControls(){
+  $('cloudCounts').textContent=state.cloudData?countLabel(state.cloudData):'Cloud data has not been loaded.';
+  $('mergeCloudBtn').disabled=!state.cloudData;
+  $('saveCloudBtn').disabled=!state.loggedIn||!state.mergeDone||!state.dirty;
+ }
+ async function loadCloud(){
+  const data=await request('/admin/data');
+  state.cloudData={keywords:Array.isArray(data.keywords)?data.keywords:[],posts:Array.isArray(data.posts)?data.posts:[],settings:data.settings&&typeof data.settings==='object'?data.settings:{}};
+  state.mergeDone=false;state.dirty=false;updateCloudControls();
+  showMessage('Cloud data read successfully. Nothing has been changed on the server.');
+ }
+ function canonical(v){return String(v||'').split('?')[0].replace(/\/$/,'').trim().toLowerCase()}
+ function mergePosts(cloud,local){
+  const map=new Map();
+  for(const p of [...cloud,...local]){
+   const key=canonical(p.url)||String(p.id||'').trim();
+   if(!key)continue;
+   const old=map.get(key)||{};
+   map.set(key,{...old,...p,important:!!(old.important||p.important)});
+  }
+  return [...map.values()];
+ }
+ function mergeKeywords(cloud,local){
+  const map=new Map();
+  for(const k of [...cloud,...local]){
+   const key=String(k.term||'').trim().toLowerCase();if(!key)continue;
+   map.set(key,{...(map.get(key)||{}),...k});
+  }
+  return [...map.values()];
+ }
+ $('adminLoginBtn').addEventListener('click',()=>{$('adminPanel').scrollIntoView({behavior:'smooth',block:'center'});$('adminPassword').focus()});
+ $('adminLoginForm').addEventListener('submit',async e=>{
+  e.preventDefault();const btn=$('adminLoginSubmit');btn.disabled=true;showMessage('Logging in…');
+  try{
+   const data=await request('/admin/login',{method:'POST',headers:{},body:JSON.stringify({password:$('adminPassword').value})});
+   state.token=data.token;sessionStorage.setItem(tokenKey,state.token);$('adminPassword').value='';setMode(true);
+   await loadCloud();showMessage('Admin login successful. Cloud data is read-only until you explicitly merge and save.');
+  }catch(err){state.token='';sessionStorage.removeItem(tokenKey);setMode(false);showMessage('Login failed: '+err.message,true)}
+  finally{btn.disabled=false}
+ });
+ $('refreshCloudBtn').addEventListener('click',async()=>{try{await loadCloud()}catch(e){showMessage('Could not refresh cloud data: '+e.message,true)}});
+ $('mergeCloudBtn').addEventListener('click',()=>{
+  if(!state.cloudData)return;
+  if(!confirm('A local JSON backup will download first. Then local and cloud posts/keywords will be merged in this browser. Cloud data will NOT be changed until you click Save to Cloud. Continue?'))return;
+  try{
+   download('socialdesk_precloud_backup_'+today()+'.json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),keywords,posts},null,2),'application/json');
+   posts=mergePosts(state.cloudData.posts,posts);keywords=mergeKeywords(state.cloudData.keywords,keywords);
+   persist();renderKeywords();renderPosts();state.mergeDone=true;state.dirty=true;updateCloudControls();
+   showMessage('Backup downloaded. Local + cloud data merged in this browser. Review counts, then explicitly choose Save merged data to Cloud when ready.');
+  }catch(e){showMessage('Merge stopped: '+e.message,true)}
+ });
+ $('saveCloudBtn').addEventListener('click',async()=>{
+  if(!state.mergeDone||!state.dirty){showMessage('Merge is required before cloud save.',true);return}
+  if(!confirm('This will save the currently merged local data to Cloud. A local backup was downloaded before the merge. Continue?'))return;
+  const btn=$('saveCloudBtn');btn.disabled=true;showMessage('Saving to Cloud…');
+  try{
+   const result=await request('/admin/data',{method:'PUT',body:JSON.stringify({keywords,posts,settings:state.cloudData?.settings||{}})});
+   state.cloudData={keywords:JSON.parse(JSON.stringify(keywords)),posts:JSON.parse(JSON.stringify(posts)),settings:state.cloudData?.settings||{},updatedAt:result.updatedAt};
+   state.dirty=false;updateCloudControls();showMessage('Cloud save successful. '+countLabel(state.cloudData));
+  }catch(e){showMessage('Cloud save failed: '+e.message+'. Your local browser data remains saved.',true);updateCloudControls()}
+ });
+ $('adminLogoutBtn').addEventListener('click',async()=>{
+  try{if(state.token)await request('/admin/logout',{method:'POST',body:'{}'})}catch{}
+  state.token='';sessionStorage.removeItem(tokenKey);state.cloudData=null;state.mergeDone=false;state.dirty=false;setMode(false);updateCloudControls();showMessage('Logged out. Local browser data remains unchanged.');
+ });
+ const originalPersist=persist;
+ persist=function(){
+  originalPersist();
+  if(state.loggedIn&&state.mergeDone){state.dirty=true;updateCloudControls();showMessage('Local changes saved in this browser. Click Save merged data to Cloud when ready.')}
+ };
+ async function restoreSession(){
+  const saved=sessionStorage.getItem(tokenKey);if(!saved)return;
+  state.token=saved;
+  try{setMode(true);await loadCloud();showMessage('Admin session restored. Cloud data read only; no automatic upload.')}
+  catch(e){state.token='';sessionStorage.removeItem(tokenKey);setMode(false);showMessage('Previous admin session expired. Please log in again.')}
+ }
+ updateCloudControls();restoreSession();
+})();
+</script>
 
 </body>
 </html>
