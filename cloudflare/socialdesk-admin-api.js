@@ -54,7 +54,7 @@ function safeEqual(a, b) {
 }
 function sessionValue(request) {
   const auth = request.headers.get("Authorization") || "";
-  const match = auth.match(/^Bearer\\s+(.+)$/i);
+  const match = auth.match(/^Bearer\s+(.+)$/i);
   if (match) return match[1].trim();
   const raw = request.headers.get("Cookie") || "";
   const part = raw.split(";").map(x => x.trim()).find(x => x.startsWith(COOKIE + "="));
