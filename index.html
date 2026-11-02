@@ -534,7 +534,7 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
   if (document.getElementById('socialdeskPublicReadOnly')) return;
   const note=document.createElement('div');
   note.id='socialdeskPublicReadOnly';
-  note.textContent='Public read-only mode: use the preset keyword categories and search links. Editing keywords, settings, posts and portal data is disabled for visitors.';
+  note.textContent='🔒 Public Access – Search Only | Editing Restricted to Admin';
   const main=document.querySelector('main.wrap');
   if(main) main.insertBefore(note,main.firstChild);
   // Remove the briefing action that would write search results into saved monitoring data.
