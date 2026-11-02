@@ -504,5 +504,46 @@ persist();renderKeywords();renderPosts();renderCheckStatus();
  el('clearArticles').addEventListener('click',()=>{results=[];render();el('articleStatus').textContent='Results cleared. Your saved posts and keywords are unchanged.'});
 })();
 </script>
+
+<!-- SOCIALDESK_PUBLIC_READ_ONLY_V1 -->
+<style id="socialdesk-public-readonly-style">
+  /* Public visitors can use preset search tools, but not edit portal content. */
+  #markChecked,
+  #view-posts .layout > .panel:first-child,
+  #view-posts #findDuplicates,
+  #view-posts #removeDuplicates,
+  #view-keywords,
+  #view-data,
+  #view-reports,
+  #view-posts #duplicateResults,
+  #view-briefing [data-save-brief],
+  #view-briefing #clearBriefing,
+  #view-articles #clearArticles,
+  .tabs button[data-tab="keywords"],
+  .tabs button[data-tab="data"],
+  .tabs button[data-tab="reports"] { display:none !important; }
+  #postList .post .posthead .actions { display:none !important; }
+  #view-posts .layout { grid-template-columns:1fr !important; }
+  #socialdeskPublicReadOnly {
+    margin:0 0 14px;padding:12px 14px;border:1px solid #b7c9f5;
+    background:#eef4ff;border-radius:12px;color:#1e3a8a;font-weight:600;
+  }
+</style>
+<script>
+(function socialdeskPublicReadOnly(){
+  if (document.getElementById('socialdeskPublicReadOnly')) return;
+  const note=document.createElement('div');
+  note.id='socialdeskPublicReadOnly';
+  note.textContent='Public read-only mode: use the preset keyword categories and search links. Editing keywords, settings, posts and portal data is disabled for visitors.';
+  const main=document.querySelector('main.wrap');
+  if(main) main.insertBefore(note,main.firstChild);
+  // Remove the briefing action that would write search results into saved monitoring data.
+  document.querySelectorAll('#view-briefing [data-save-brief]').forEach(el=>el.remove());
+  // Make the public-facing editing routes unavailable through ordinary page controls.
+  document.querySelectorAll('.tabs button[data-tab="keywords"], .tabs button[data-tab="data"], .tabs button[data-tab="reports"]').forEach(el=>el.remove());
+})();
+</script>
+<!-- /SOCIALDESK_PUBLIC_READ_ONLY_V1 -->
+
 </body>
 </html>
