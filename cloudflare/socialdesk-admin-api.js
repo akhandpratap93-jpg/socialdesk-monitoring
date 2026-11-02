@@ -8,12 +8,12 @@
  *
  * Routes:
  *   GET  /public/config   public preset keyword/category data only
- *   POST /admin/login     password -> HttpOnly session cookie
+ *   POST /admin/login     password -> signed short-lived bearer token
  *   POST /admin/logout    clears session
  *   GET  /admin/data      authenticated full portal data
  *   PUT  /admin/data      authenticated full portal data update
  *
- * Configure ALLOWED_ORIGIN as a Worker variable:
+ * The browser keeps the bearer token in sessionStorage; this avoids third-party-cookie blocking.\n * Configure ALLOWED_ORIGIN as a Worker variable:
  *   https://akhandpratap93-jpg.github.io
  */
 const COOKIE = "socialdesk_admin";
@@ -52,7 +52,10 @@ function safeEqual(a, b) {
   for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
-function cookieValue(request) {
+function sessionValue(request) {
+  const auth = request.headers.get("Authorization") || "";
+  const match = auth.match(/^Bearer\\s+(.+)$/i);
+  if (match) return match[1].trim();
   const raw = request.headers.get("Cookie") || "";
   const part = raw.split(";").map(x => x.trim()).find(x => x.startsWith(COOKIE + "="));
   return part ? decodeURIComponent(part.slice(COOKIE.length + 1)) : "";
@@ -62,7 +65,7 @@ async function makeSession(secret) {
   return payload + "." + await sign(payload, secret);
 }
 async function validSession(request, secret) {
-  const token = cookieValue(request);
+  const token = sessionValue(request);
   const split = token.lastIndexOf(".");
   if (split < 1) return false;
   const payload = token.slice(0, split);
@@ -84,7 +87,7 @@ export default {
       "Access-Control-Allow-Origin": origin === allowed ? allowed : "null",
       "Access-Control-Allow-Credentials": "true",
       "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
       "Vary": "Origin"
     };
     if (origin && origin !== allowed) return json({ error: "Origin not allowed" }, 403, cors);
@@ -110,15 +113,11 @@ export default {
         return json({ error: "Invalid password" }, 401, cors);
       }
       const token = await makeSession(env.SESSION_SECRET);
-      return json({ ok: true, expiresIn: SESSION_SECONDS }, 200, cors, {
-        "Set-Cookie": COOKIE + "=" + encodeURIComponent(token) + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=" + SESSION_SECONDS
-      });
+      return json({ ok: true, token, expiresIn: SESSION_SECONDS }, 200, cors);
     }
 
     if (path === "/admin/logout" && request.method === "POST") {
-      return json({ ok: true }, 200, cors, {
-        "Set-Cookie": COOKIE + "=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0"
-      });
+      return json({ ok: true }, 200, cors);
     }
 
     if (path.startsWith("/admin/")) {
