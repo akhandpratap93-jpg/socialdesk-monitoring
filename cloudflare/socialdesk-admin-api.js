@@ -111,13 +111,13 @@ export default {
       }
       const token = await makeSession(env.SESSION_SECRET);
       return json({ ok: true, expiresIn: SESSION_SECONDS }, 200, cors, {
-        "Set-Cookie": COOKIE + "=" + encodeURIComponent(token) + "; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=" + SESSION_SECONDS
+        "Set-Cookie": COOKIE + "=" + encodeURIComponent(token) + "; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=" + SESSION_SECONDS
       });
     }
 
     if (path === "/admin/logout" && request.method === "POST") {
       return json({ ok: true }, 200, cors, {
-        "Set-Cookie": COOKIE + "=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0"
+        "Set-Cookie": COOKIE + "=; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=0"
       });
     }
 
