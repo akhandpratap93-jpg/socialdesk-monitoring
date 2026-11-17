@@ -149,7 +149,7 @@ function xQueries(c,mode,extra){
   const topic='(#PMPOSHAN OR #PMPoshan OR #MidDayMeal OR #MidDayMeals OR "PM POSHAN" OR "mid day meal" OR "mid-day meal" OR "midday meal" OR "ಮಧ್ಯಾಹ್ನದ ಊಟ" OR "ಮಧ್ಯಾಹ್ನದ ಬಿಸಿಯೂಟ" OR "ಮಿಡ್ಡೇ ಮೀಲ್ಸ್" OR "मिड डे मील" OR "मध्याह्न भोजन")';
   const issueTerms=['"food poisoning"','"rotten food"','worms','insects','"meal not served"','"food quality"','corruption','"fund delay"','"payment delay"','"cooks protest"','"caste discrimination"','"ಊಟದಲ್ಲಿ ವಿಷ"','"ಕೆಟ್ಟ ಆಹಾರ"','"ಆಹಾರದಲ್ಲಿ ಹುಳುಗಳು"','"ಊಟ ನೀಡಿಲ್ಲ"','"ಹಣ ದುರುಪಯೋಗ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿ ಪ್ರತಿಭಟನೆ"','"खाने में कीड़े"','"खराब भोजन"','"भोजन नहीं मिला"','"भोजन में गड़बड़ी"','"भुगतान में देरी"','"फंड में देरी"','"खाद्य विषाक्तता"','"जातिगत भेदभाव"'];
   let issueQuery=topic+' ('+issueTerms.join(' OR ')+')';
-  while(issueQuery.length>400 && issueTerms.length>5){issueTerms.pop();issueQuery=topic+' ('+issueTerms.join(' OR ')+')';}
+  while(issueQuery.length>250 && issueTerms.length>5){issueTerms.pop();issueQuery=topic+' ('+issueTerms.join(' OR ')+')';}
   if(extra && issueQuery.length+extra.length+3<=400){issueQuery+=' "'+extra.replace(/"/g,'')+'"';}
   const schemeResults=[
    {label:'X · PM POSHAN / Mid-Day Meal — all topic mentions',q:topic},
@@ -177,7 +177,7 @@ function xQueries(c,mode,extra){
    for(const term of terms){
     const candidate=group.concat(term);
     const q=base+' ('+candidate.join(' OR ')+')';
-    if(q.length>400 && group.length){out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});group=[term];}
+    if(q.length>250 && group.length){out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});group=[term];}
     else group=candidate;
    }
    if(group.length)out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});
@@ -203,7 +203,7 @@ function xQueries(c,mode,extra){
   results.push(...pack('X · Pralhad Joshi — Consumer Affairs / PDS issue discovery',names,consumer));
   results.push(...pack('X · Pralhad Joshi — Renewable Energy / MNRE issue discovery',names,energy));
   results.push(...pack('X · Bilkis Bano case — minister name references',names,caseTerms));
-  if(extra)results.forEach(x=>{if(x.q.length+extra.length+3<=400)x.q+=' "'+extra.replace(/"/g,'')+'"'});
+  if(extra)results.forEach(x=>{if(x.q.length+extra.length+3<=250)x.q+=' "'+extra.replace(/"/g,'')+'"'});
   return results;
  }
  // Other categories retain one compact issue-focused query.
@@ -211,8 +211,8 @@ function xQueries(c,mode,extra){
  let issueTerms=termsFor(c,mode).slice();
  const make=()=>anchors+' ('+issueTerms.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')'+(extra?' "'+extra.replace(/"/g,'')+'"':'');
  let q=make();
- while(q.length>400 && issueTerms.length>5){issueTerms.pop();q=make();}
- if(q.length>400){while(q.length>400 && issueTerms.length>2){issueTerms.pop();q=make();}}
+ while(q.length>250 && issueTerms.length>5){issueTerms.pop();q=make();}
+ if(q.length>250){while(q.length>250 && issueTerms.length>2){issueTerms.pop();q=make();}}
  return [{label:'X · Category issue monitoring',q}];
 }
 function renderLinks(){
