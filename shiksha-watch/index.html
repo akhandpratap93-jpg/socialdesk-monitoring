@@ -143,34 +143,14 @@ function xAnchorQuery(raw){
  return '"'+t+'"';
 }
 function xQueries(c,mode,extra){
- // Ministry Policy & Higher Education: search each issue phrase independently.
- // Requiring an institution/ministry anchor AND the issue phrase was suppressing
- // Hindi/Kannada posts that mention the issue without an English acronym or ministry name.
- if(c.id==='ministry'){
-  const selected=termsFor(c,mode);
-  const out=[];
-  const langOf=s=>/[\\u0C80-\\u0CFF]/.test(s)?'ಕನ್ನಡ':/[\\u0900-\\u097F]/.test(s)?'हिंदी':'English';
-  selected.forEach(term=>{
-   let q=term;
-   if(extra)q+=' "'+extra.replace(/"/g,'')+'"';
-   out.push({label:'X · Ministry Policy & Higher Education · '+langOf(term)+' · '+term.replace(/"/g,''),q});
-  });
-  // Broad Ministry/central-institution searches are separate links, not mandatory filters.
-  const broad=[
-   {label:'X · Central Ministry of Education · English',q:'("Ministry of Education" OR "Education Ministry" OR "Higher Education" OR "Department of School Education" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS)'},
-   {label:'X · केंद्रीय शिक्षा मंत्रालय · हिंदी',q:'("शिक्षा मंत्रालय" OR "केंद्रीय शिक्षा मंत्रालय" OR "उच्च शिक्षा" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS)'},
-   {label:'X · ಕೇಂದ್ರ ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ · ಕನ್ನಡ',q:'("ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ" OR "ಉನ್ನತ ಶಿಕ್ಷಣ" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS)'}
-  ];
-  broad.forEach(x=>{if(extra)x.q+=' "'+extra.replace(/"/g,'')+'"';out.push(x)});
-  return out;
- }
- // Other categories keep their existing query logic.
+ // PM POSHAN needs broad discovery as well as issue-focused matching:
+ // many relevant posts use hashtags or describe a development without a standard negative keyword.
  if(c.id==='schemes'){
   const topic='(#PMPOSHAN OR #PMPoshan OR #MidDayMeal OR #MidDayMeals OR "PM POSHAN" OR "mid day meal" OR "mid-day meal" OR "midday meal" OR "ಮಧ್ಯಾಹ್ನದ ಊಟ" OR "ಮಧ್ಯಾಹ್ನದ ಬಿಸಿಯೂಟ" OR "ಮಿಡ್ಡೇ ಮೀಲ್ಸ್" OR "मिड डे मील" OR "मध्याह्न भोजन")';
   const issueTerms=['"food poisoning"','"rotten food"','worms','insects','"meal not served"','"food quality"','corruption','"fund delay"','"payment delay"','"cooks protest"','"caste discrimination"','"ಊಟದಲ್ಲಿ ವಿಷ"','"ಕೆಟ್ಟ ಆಹಾರ"','"ಆಹಾರದಲ್ಲಿ ಹುಳುಗಳು"','"ಊಟ ನೀಡಿಲ್ಲ"','"ಹಣ ದುರುಪಯೋಗ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿ ಪ್ರತಿಭಟನೆ"','"खाने में कीड़े"','"खराब भोजन"','"भोजन नहीं मिला"','"भोजन में गड़बड़ी"','"भुगतान में देरी"','"फंड में देरी"','"खाद्य विषाक्तता"','"जातिगत भेदभाव"'];
   let issueQuery=topic+' ('+issueTerms.join(' OR ')+')';
   while(issueQuery.length>250 && issueTerms.length>5){issueTerms.pop();issueQuery=topic+' ('+issueTerms.join(' OR ')+')';}
-  if(extra && issueQuery.length+extra.length+3<=400)issueQuery+=' "'+extra.replace(/"/g,'')+'"';
+  if(extra && issueQuery.length+extra.length+3<=400){issueQuery+=' "'+extra.replace(/"/g,'')+'"';}
   const schemeResults=[
    {label:'X · PM POSHAN / Mid-Day Meal — all topic mentions',q:topic},
    {label:'X · PM POSHAN / Mid-Day Meal — negative issues',q:issueQuery}
@@ -181,8 +161,56 @@ function xQueries(c,mode,extra){
   }
   return schemeResults;
  }
- // Existing Joshi-specific monitoring and other category logic remain unchanged.
- // The previous ministry-specific block is intentionally bypassed here.
+ // Ministry category: keep education monitoring separate, and add negative-only
+ // searches for the Minister across his other public portfolios and controversies.
+ if(c.id==='ministry'){
+  const names='("Pralhad Joshi" OR "Prahlad Joshi" OR "प्रल्हाद जोशी" OR "प्रहलाद जोशी" OR "ಪ್ರಲ್ಹಾದ್ ಜೋಶಿ" OR "ಪ್ರಹ್ಲಾದ್ ಜೋಶಿ" OR "ಪ್ರಲ್ಹಾದ ಜೋಶಿ")';
+  const educationAnchors='("Ministry of Education" OR "Education Ministry" OR "Higher Education" OR "Department of School Education" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS OR "शिक्षा मंत्रालय" OR "ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ")';
+  const en=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','fraud','corruption','misconduct','irregularity','"public outrage"','"demand for resignation"','accountability','"under scrutiny"','"failed to respond"','"unfulfilled promises"','"project delay"','"subsidy pending"','"consumer complaint"','"ration irregularities"','"price rise"','"unfair trade practice"','"food shortage"','"paper leak"','"exam cancellation"','"institutional negligence"','"scholarship delay"','"data breach"','"court order"','investigation'];
+  const hi=['"आलोचना"','"विवाद"','"आरोप"','"विरोध"','"प्रदर्शन"','"लापरवाही"','"विफलता"','"घोटाला"','"धोखाधड़ी"','"भ्रष्टाचार"','"अनियमितता"','"जनता में आक्रोश"','"इस्तीफे की मांग"','"जवाबदेही"','"सवालों के घेरे में"','"जवाब देने से बच"','"वादे अधूरे"','"परियोजना में देरी"','"सब्सिडी लंबित"','"उपभोक्ता शिकायत"','"राशन अनियमितता"','"महंगाई"','"खाद्य कमी"','"पेपर लीक"','"परीक्षा रद्द"','"छात्र प्रदर्शन"','"संस्थागत लापरवाही"','"छात्रवृत्ति में देरी"','"डेटा लीक"','"जांच"'];
+  const kn=['"ವಿಮರ್ಶೆ"','"ವಿವಾದ"','"ಆರೋಪ"','"ಪ್ರತಿಭಟನೆ"','"ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿಫಲತೆ"','"ಹಗರಣ"','"ವಂಚನೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಅಕ್ರಮ"','"ಜನರ ಆಕ್ರೋಶ"','"ರಾಜೀನಾಮೆಗೆ ಆಗ್ರಹ"','"ಹೊಣೆಗಾರಿಕೆ"','"ಪ್ರಶ್ನೆಗಳ ಸುಳಿಯಲ್ಲಿ"','"ಉತ್ತರ ನೀಡಿಲ್ಲ"','"ಭರವಸೆ ಈಡೇರಿಲ್ಲ"','"ಯೋಜನೆ ವಿಳಂಬ"','"ಸಹಾಯಧನ ಬಾಕಿ"','"ಗ್ರಾಹಕರ ದೂರು"','"ಪಡಿತರ ಅಕ್ರಮ"','"ಬೆಲೆ ಏರಿಕೆ"','"ಆಹಾರ ಕೊರತೆ"','"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಪರೀಕ್ಷೆ ರದ್ದು"','"ವಿದ್ಯಾರ್ಥಿ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿದ್ಯಾರ್ಥಿವೇತನ ವಿಳಂಬ"','"ಡೇಟಾ ಸೋರಿಕೆ"','"ತನಿಖೆ"'];
+  const consumer=['"consumer affairs"','"consumer protection"','"consumer rights"','"food and public distribution"','PDS','ration','"food inflation"','"consumer complaint"','"unfair trade practice"','"ration irregularities"','"food shortage"','"price rise"','"उपभोक्ता मामले"','"उपभोक्ता अधिकार"','"सार्वजनिक वितरण प्रणाली"','राशन','"महंगाई"','"राशन अनियमितता"','"ग्राहक ವ್ಯವಹಾರ"','"ಗ್ರಾಹಕರ ಹಕ್ಕು"','"ಸಾರ್ವಜನಿಕ ವಿತರಣೆ"','"ಪಡಿತರ"','"ಬೆಲೆ ಏರಿಕೆ"','"ಪಡಿತರ ಅಕ್ರಮ"'];
+  const energy=['"renewable energy"','"new and renewable energy"','MNRE','"solar energy"','"solar power"','"PM Surya Ghar"','"solar project delay"','"subsidy pending"','"vendor fraud"','"power curtailment"','"transmission bottleneck"','"project cancellation"','"नवीकरणीय ऊर्जा"','"सौर ऊर्जा"','"सौर बिजली"','"सौर योजना"','"परियोजना में देरी"','"सब्सिडी लंबित"','"बिजली कटौती"','"ट्रांसमिशन बाधा"','"ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ"','"ಸೌರಶಕ್ತಿ"','"ಸೌರ ವಿದ್ಯುತ್"','"ಸೌರ ಯೋಜನೆ"','"ಯೋಜನೆ ವಿಳಂಬ"','"ಸಹಾಯಧನ ಬಾಕಿ"','"ವಿದ್ಯುತ್ ಕಡಿತ"','"ಪ್ರಸರಣ ಅಡಚಣೆ"'];
+  const caseTerms=['"Bilkis Bano"','"ಬಿಲ್ಕಿಸ್ ಬಾನು"','"ಬಿಲ್ಕಿಸ್ ಬಾನು ಪ್ರಕರಣ"','"बिलकिस बानो"','"बिल्किस बानो"','"बिलकिस बानो मामला"'];
+  const pack=(label,base,terms)=>{
+   const out=[];let group=[];
+   for(const term of terms){
+    const candidate=group.concat(term);
+    const q=base+' ('+candidate.join(' OR ')+')';
+    if(q.length>250 && group.length){out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});group=[term];}
+    else group=candidate;
+   }
+   if(group.length)out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});
+   return out;
+  };
+  let educationTerms=termsFor(c,mode).map(x=>x.startsWith('"')?x:'"'+x+'"');
+  const educationQuery='('+educationAnchors.slice(1,-1)+') ('+educationTerms.join(' OR ')+')';
+  const results=[];
+  // Run each education issue term independently; X does not require a Ministry/acronym match in the same post.
+  educationTerms.forEach(term=>results.push({label:'X · Ministry of Education — '+(/[\\u0C80-\\u0CFF]/.test(term)?'ಕನ್ನಡ':/[\\u0900-\\u097F]/.test(term)?'हिंदी':'English')+' · '+term.replace(/"/g,''),q:term+(extra?' "'+extra.replace(/"/g,'')+'"':'')}));
+  results.push({label:'X · Central Ministry of Education — English broad search',q:educationAnchors});
+  results.push({label:'X · केंद्रीय शिक्षा मंत्रालय — हिंदी broad search',q:'("शिक्षा मंत्रालय" OR "केंद्रीय शिक्षा मंत्रालय" OR "उच्च शिक्षा" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS)'});
+  results.push({label:'X · ಕೇಂದ್ರ ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ — ಕನ್ನಡ broad search',q:'("ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ" OR "ಉನ್ನತ ಶಿಕ್ಷಣ" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS)'});
+  results.push(...pack('X · Pralhad Joshi — English negative / issue words',names,en));
+  results.push(...pack('X · Pralhad Joshi — हिंदी नकारात्मक / मुद्दे',names,hi));
+  results.push(...pack('X · Pralhad Joshi — ಕನ್ನಡ ನಕಾರಾತ್ಮಕ / ಸಮಸ್ಯೆಗಳು',names,kn));
+  // Separate issue-discovery searches: name + issue vocabulary, without requiring
+  // a sentiment label. These catch reports phrased as questions, delays or complaints.
+  const discoverEn=['question','questions','query','reply','response','complaint','problem','issue','demand','review','inquiry','probe','investigation','delay','pending','shortage','dispute','notice','court','hearing','decision','implementation'];
+  const discoverHi=['सवाल','प्रश्न','जवाब','जवाब मांगा','शिकायत','समस्या','मुद्दा','मांग','जांच','पड़ताल','देरी','लंबित','कमी','विवाद','नोटिस','अदालत','सुनवाई','फैसला','क्रियान्वयन'];
+  const discoverKn=['ಪ್ರಶ್ನೆ','ಪ್ರಶ್ನೆಗಳು','ಉತ್ತರ','ಪ್ರತಿಕ್ರಿಯೆ','ದೂರು','ಸಮಸ್ಯೆ','ವಿಷಯ','ಬೇಡಿಕೆ','ತನಿಖೆ','ವಿಚಾರಣೆ','ವಿಳಂಬ','ಬಾಕಿ','ಕೊರತೆ','ವಿವಾದ','ನೋಟಿಸ್','ನ್ಯಾಯಾಲಯ','ನಿರ್ಧಾರ','ಅನುಷ್ಠಾನ'];
+  results.push(...pack('X · Pralhad Joshi — English issue discovery (not sentiment-dependent)',names,discoverEn));
+  results.push(...pack('X · Pralhad Joshi — हिंदी मुद्दों की खोज (नकारात्मक शब्द जरूरी नहीं)',names,discoverHi));
+  results.push(...pack('X · Pralhad Joshi — ಕನ್ನಡ ವಿಷಯಗಳ ಹುಡುಕಾಟ (ನಕಾರಾತ್ಮಕ ಪದ ಕಡ್ಡಾಯವಲ್ಲ)',names,discoverKn));
+  // Portfolio queries require only the name plus relevant portfolio/problem vocabulary.
+  // They do NOT require a third mandatory sentiment group, so issue reports are less likely to be missed.
+  results.push(...pack('X · Pralhad Joshi — Consumer Affairs / PDS issue discovery',names,consumer));
+  results.push(...pack('X · Pralhad Joshi — Renewable Energy / MNRE issue discovery',names,energy));
+  results.push(...pack('X · Bilkis Bano case — minister name references',names,caseTerms));
+  if(extra)results.forEach(x=>{if(x.q.length+extra.length+3<=250)x.q+=' "'+extra.replace(/"/g,'')+'"'});
+  return results;
+ }
+ // Other categories retain one compact issue-focused query.
  const anchors='('+c.anchor.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
  let issueTerms=termsFor(c,mode).slice();
  const make=()=>anchors+' ('+issueTerms.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')'+(extra?' "'+extra.replace(/"/g,'')+'"':'');
