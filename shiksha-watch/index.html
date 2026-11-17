@@ -1,240 +1,97 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101d35">
-<title>ShikshaWatch | Central Education Monitor</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d35"><title>ShikshaWatch | Central Education Monitor</title>
 <style>
-:root{--navy:#101d35;--blue:#2457d6;--bg:#f3f6fb;--panel:#fff;--text:#172033;--muted:#64748b;--line:#e2e8f0;--red:#b42318;--amber:#925b08;--green:#167447}
+:root{--navy:#101d35;--blue:#2457d6;--bg:#f3f6fb;--panel:#fff;--text:#172033;--muted:#64748b;--line:#e2e8f0;--red:#b42318}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 header{background:linear-gradient(115deg,#101d35,#1c3766);color:#fff;padding:22px max(18px,calc((100% - 1240px)/2));display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.brand{font-size:25px;font-weight:850;letter-spacing:-.7px}.brand small{display:block;font-size:12px;font-weight:500;letter-spacing:.1px;color:#c7d7ff}
-.header-tag{border:1px solid #60759b;border-radius:30px;padding:7px 11px;color:#e7efff;font-size:12px}
+.brand{font-size:25px;font-weight:850;letter-spacing:-.7px}.brand small{display:block;font-size:12px;font-weight:500;color:#c7d7ff}.header-tag{border:1px solid #60759b;border-radius:30px;padding:7px 11px;color:#e7efff;font-size:12px}
 main{max-width:1240px;margin:20px auto;padding:0 16px}.notice{background:#fff7e6;border:1px solid #f1d08a;color:#754b00;border-radius:12px;padding:12px 14px;margin-bottom:15px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:15px}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:0 2px 8px #10213d08}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:22px;margin-top:3px}
 .tabs{display:flex;gap:7px;overflow:auto;margin-bottom:13px}.tab{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 13px;white-space:nowrap;font-weight:700;cursor:pointer}.tab.active{background:var(--blue);border-color:var(--blue);color:white}
 .layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr);gap:13px}.panel h2{font-size:17px;margin:0 0 10px}.panel h3{font-size:14px;margin:15px 0 7px}
 label{font-weight:700;font-size:12px;display:block;margin:10px 0 5px;color:#334155}select,input{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:10px;background:white;color:var(--text);font:inherit}
-.btn{border:1px solid var(--line);border-radius:9px;background:white;padding:9px 12px;font-weight:700;cursor:pointer;color:var(--text)}.btn.primary{background:var(--blue);border-color:var(--blue);color:white}.btn.red{background:#fff1f0;border-color:#f0b7b2;color:#9c2119}.btn:disabled{opacity:.5;cursor:not-allowed}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:var(--muted)}.small{font-size:12px}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid #dbe4f0;border-radius:20px;padding:5px 9px;background:#f8fafc;color:#34445e;font-size:12px}
-.category-list{display:grid;gap:8px}.category{border:1px solid var(--line);border-radius:11px;padding:11px;background:#fff;cursor:pointer;text-align:left}.category.selected{border-color:#6c8ce8;background:#f1f5ff}.category strong{display:block}.category span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
-.querybox{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:11px;overflow-wrap:anywhere;font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}
-.linklist{display:grid;gap:8px;margin-top:10px}.linkitem{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px}.linkitem strong{display:block}.linkitem small{color:var(--muted)}
-a{color:var(--blue);font-weight:700;text-decoration:none}a:hover{text-decoration:underline}
-.hidden{display:none!important}.footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+.btn{border:1px solid var(--line);border-radius:9px;background:white;padding:9px 12px;font-weight:700;cursor:pointer;color:var(--text)}.btn.primary{background:var(--blue);border-color:var(--blue);color:white}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:var(--muted)}.small{font-size:12px}.category-list{display:grid;gap:8px}
+.category{border:1px solid var(--line);border-radius:11px;padding:11px;background:#fff;cursor:pointer;text-align:left}.category.selected{border-color:#6c8ce8;background:#f1f5ff}.category strong{display:block}.category span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.querybox{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:11px;overflow-wrap:anywhere;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.linklist{display:grid;gap:8px;margin-top:10px}.linkitem{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px}.linkitem strong{display:block}.linkitem small{color:var(--muted)}a{color:var(--blue);font-weight:700;text-decoration:none}a:hover{text-decoration:underline}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid #dbe4f0;border-radius:20px;padding:5px 9px;background:#f8fafc;color:#34445e;font-size:12px}.hidden{display:none!important}.footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
 @media(max-width:820px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.brand{font-size:22px}.stat strong{font-size:19px}}
-</style>
-</head>
+</style></head>
 <body>
 <header><div class="brand">ShikshaWatch <small>Central Education Ministry Monitoring Portal · X + Google Search</small></div><span class="header-tag">🇮🇳 India focus · Central institutions only</span></header>
 <main>
-<div class="notice"><strong>Monitoring scope:</strong> Ministry of Education, its departments, central examination bodies and centrally funded/established institutions only. Anyone may be the author: ministers, MPs, opposition leaders, students, teachers, journalists, organisations or citizens. State Government education departments, state boards and routine state-level education news are excluded unless a clear Union MoE connection exists. A central institution located in a state remains in scope.</div>
-<div class="stats">
-<div class="stat"><span>Monitoring categories</span><strong id="catCount">6</strong></div>
-<div class="stat"><span>Search platforms</span><strong>6</strong></div>
-<div class="stat"><span>Priority</span><strong>Negative first</strong></div>
-<div class="stat"><span>Collection mode</span><strong>Manual search</strong></div>
-</div>
-<nav class="tabs">
-<button class="tab active" data-tab="search">Search Dashboard</button>
-<button class="tab" data-tab="keywords">Category Keywords</button>
-<button class="tab" data-tab="guidelines">Relevance Rules</button>
-</nav>
-<section id="view-search">
-<div class="layout">
-<div class="panel">
-<h2>Build X / Google Search links</h2>
-<p class="muted">Choose a subject category and platform. X searches open directly on x.com. Each category creates one compact Boolean search. Relevant posts by any author can appear; Hindi and English terms are included. Verify the Central MoE connection before reporting.</p>
-<div class="grid2">
-<div><label for="category">Monitoring category</label><select id="category"></select></div>
-<div><label for="platform">Platform / source</label><select id="platform"><option value="x">X (Direct Search)</option><option value="all">Google Web Search</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option><option value="youtube">YouTube</option><option value="news">Digital News / Articles</option></select></div>
-</div>
-<div class="grid2">
-<div><label for="sentiment">News filter</label><select id="sentiment"><option value="negative" selected>Negative news only</option></select></div>
-<div><label for="period">Time period</label><select id="period"><option value="d">Past 24 hours</option><option value="w" selected>Past week</option><option value="m">Past month</option><option value="any">Any time</option></select></div>
-</div>
-<label for="extra">Additional keyword (optional)</label><input id="extra" placeholder="e.g. Delhi University data breach, UGC NET result">
+<div class="notice"><strong>Monitoring scope:</strong> Central Ministry of Education, its departments, central institutions and Union schemes only. Search is open to posts by ministers, opposition leaders, student groups, journalists and citizens. A minister's name is not required. Central institutions remain in scope wherever located; routine state-government education matters are excluded unless directly linked to a Union body, policy or scheme.</div>
+<div class="stats"><div class="stat"><span>Monitoring categories</span><strong id="catCount">6</strong></div><div class="stat"><span>Search languages</span><strong>Hindi · English · Kannada</strong></div><div class="stat"><span>Priority</span><strong>Negative first</strong></div><div class="stat"><span>Collection mode</span><strong>Manual search</strong></div></div>
+<nav class="tabs"><button class="tab active" data-tab="search">Search Dashboard</button><button class="tab" data-tab="keywords">Category Keywords</button><button class="tab" data-tab="guidelines">Relevance Rules</button></nav>
+<section id="view-search"><div class="layout">
+<div class="panel"><h2>Build X / Google Search links</h2><p class="muted">Choose one subject category and sentiment. The portal creates separate English, Hindi and Kannada searches. Negative issue terms are prioritized; ministry or minister names are not mandatory when the central institution, exam or scheme itself is the search anchor.</p>
+<div class="grid2"><div><label for="category">Monitoring category</label><select id="category"></select></div><div><label for="platform">Platform / source</label><select id="platform"><option value="x">X (Direct Search)</option><option value="all">Google Web Search</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option><option value="youtube">YouTube</option><option value="news">Digital News / Articles</option></select></div></div>
+<div class="grid2"><div><label for="sentiment">News filter</label><select id="sentiment"><option value="negative" selected>Negative (Priority)</option><option value="positive">Positive updates</option><option value="neutral">Neutral / routine updates</option><option value="all">All sentiments</option></select></div><div><label for="period">Time period</label><select id="period"><option value="d">Past 24 hours</option><option value="w" selected>Past week</option><option value="m">Past month</option><option value="any">Any time</option></select></div></div>
+<label for="extra">Additional keyword (optional)</label><input id="extra" placeholder="e.g. IIT Bombay hostel, UGC regulation, NTA result">
 <div class="actions"><button class="btn primary" id="build">Generate searches</button><button class="btn" id="copyQuery">Copy main query</button></div>
-<h3>Main X search queries</h3><div class="querybox" id="mainQuery">Select a category and generate searches.</div>
-<div class="linklist" id="results"><div class="muted">Search links will appear here.</div></div>
-</div>
-<aside class="panel">
-<h2>Category quick select</h2><div class="category-list" id="categoryList"></div>
-<h3>Important search note</h3>
-<p class="muted small">Google may ignore parts of long Boolean queries and may not index every social post. Run the category searches regularly and verify each original post/article before reporting.</p>
-<h3>Do not exclude by state name</h3>
-<p class="muted small">IIT, NIT, Central Universities, KVS, NVS or other central bodies can be located in any state. Exclude state-government departments and state boards—not the state name itself.</p>
-</aside>
-</div>
-</section>
-<section id="view-keywords" class="hidden">
-<div class="panel">
-<h2>Category-wise keyword library</h2><p class="muted">These bilingual keyword groups are designed for discovery. The author is unrestricted: anyone discussing a tracked central education subject may appear. Combine institution/subject anchors with issue terms; verify the central Ministry connection before marking Direct.</p>
-<div id="keywordLibrary" class="category-list"></div>
-</div>
-</section>
-<section id="view-guidelines" class="hidden">
-<div class="layout">
-<div class="panel"><h2>Direct relevance — include</h2>
-<ul>
-<li>Union Ministry of Education, DoSEL and Department of Higher Education.</li>
-<li>UGC, AICTE, NTA, NCERT/CIET, CBSE, NIOS, NCTE, KVS and NVS.</li>
-<li>IITs, NITs, IIITs, IISERs, IISc, IIMs and Central Universities.</li>
-<li>Central exams and processes: NEET-UG, JEE, CUET, UGC-NET and central recruitment/admissions when the responsible body is in scope.</li>
-<li>Central policies, schemes, funding, official decisions, Parliament/court matters and ministry-linked student issues.</li>
-</ul></div>
-<div class="panel"><h2>Exclude — out of scope</h2>
-<ul>
-<li>State Education Departments, State Education Ministers and state-government policy announcements.</li>
-<li>State Board exams/results and routine state university/college matters with no central Ministry connection.</li>
-<li>Foreign-country education news and generic global education stories.</li>
-<li>Health-only exams such as NEET-PG, unless a specific central MoE body is materially involved. Foreign education reports and generic global rankings without India/MoE relevance.</li>
-<li>Posts mentioning a minister's name alone without an actual Education Ministry connection. Any author may be tracked, but the post itself must concern a central MoE body, exam, scheme, policy or institution.</li>
-</ul></div>
-</div>
-<div class="notice" style="margin-top:13px"><strong>Reporting rule:</strong> Search match is not proof of relevance. The author does not matter; the subject does. Confirm the institution, responsible authority, central Ministry connection, location/context, date and original source. Mark uncertain items “Review Needed” rather than Direct. PM POSHAN / Mid-Day Meal incidents are Direct only when linked to the central scheme, guidelines, funding or Ministry; otherwise review as state-level context. ASER, AISHE, UDISE+, NAS, PARAKH, CAG and parliamentary reports should be checked for the India-specific finding and its relevance to Union MoE.</div>
+<h3>Generated search queries</h3><div class="querybox" id="mainQuery">Select a category and generate searches.</div><div class="linklist" id="results"><div class="muted">Search links will appear here.</div></div>
+</div><aside class="panel"><h2>Category quick select</h2><div class="category-list" id="categoryList"></div><h3>Coverage safeguards</h3><p class="muted small">No minister-name requirement for issue-based searches. Search authors are unrestricted. Categories use subject-specific anchors to reduce duplicate matches. Confirm the actual Central MoE connection before reporting.</p><h3>Important note</h3><p class="muted small">This is a search-link builder, not an automatic scraper. X and Google may return incomplete or approximate results. Open the original post/article and verify context, date and source.</p></aside>
+</div></section>
+<section id="view-keywords" class="hidden"><div class="panel"><h2>Category-wise keyword library</h2><p class="muted">Negative / issue terms have priority. Positive and neutral terms are also available. All categories are flat; there are no nested subcategories.</p><div id="keywordLibrary" class="category-list"></div></div></section>
+<section id="view-guidelines" class="hidden"><div class="layout">
+<div class="panel"><h2>Include — direct central relevance</h2><ul><li>Ministry of Education, DoSEL and Department of Higher Education.</li><li>UGC, AICTE, NTA, NCERT/CIET, CBSE, NIOS, NCTE, KVS and NVS.</li><li>IITs, NITs, IIITs, IISERs, IISc, IIMs and Central Universities, regardless of state location.</li><li>NEET-UG, JEE, CUET, UGC-NET and other exams managed by central bodies.</li><li>PM POSHAN / Mid-Day Meal, Samagra Shiksha and other Union education schemes.</li><li>India-specific ASER, AISHE, UDISE+, NAS, PARAKH, CAG and Parliamentary findings relevant to Union education.</li></ul></div>
+<div class="panel"><h2>Exclude — unless direct Union link</h2><ul><li>Routine State Education Department announcements and state policy matters.</li><li>State Board exams/results and routine state university matters with no central connection.</li><li>Foreign-country education news and generic global education stories.</li><li>Generic minister-name mentions without an actual education connection.</li></ul></div></div>
+<div class="notice" style="margin-top:13px"><strong>Classification examples:</strong> IIT student suicide → Central Institutions; NTA paper leak → Exams; Mid-Day Meal food contamination → School Schemes; UGC/AICTE corruption → Higher Education; serious CAG education finding → Reports. A story should be assigned to its primary responsible body/topic, not copied into multiple categories. PM POSHAN incidents need a clear scheme connection; otherwise mark for review.</div>
 </section>
 <div class="footer">ShikshaWatch · Search-only discovery tool · No automatic scraping or background collection</div>
 </main>
 <script>
 const categories=[
-{id:"ministry",name:"1. Ministry, Policy & Higher Education",desc:"Union Ministry, NEP, higher education system, policy, budget and implementation criticism",anchor:['"Ministry of Education"','"Education Ministry"','"Dharmendra Pradhan"','"Pralhad Joshi"','"Higher Education"','"NEP 2020"','UGC','"शिक्षा मंत्रालय"','"ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ"'],negative:['"ಶಿಕ್ಷಣ ವ್ಯವಸ್ಥೆ ವೈಫಲ್ಯ"','"ಉನ್ನತ ಶಿಕ್ಷಣ ಬಿಕ್ಕಟ್ಟು"','"ನೀತಿ ವೈಫಲ್ಯ"','"ಶಿಕ್ಷಣ ನೀತಿ"','"ಶಿಕ್ಷಣ ಸಚಿವಾಲಯದ ನಿರ್ಲಕ್ಷ್ಯ"','"ಶಿಕ್ಷಣ ಬಜೆಟ್"','"ಶिक्षा व्यवस्था की विफलता"','"उच्च शिक्षा व्यवस्था"','"शिक्षा नीति पर सवाल"','"शिक्षा बजट"','"education system failure"','"higher education crisis"','"policy failure"','"NEP implementation"','"policy controversy"','"ministry negligence"','"funding crisis"','"budget cut"','"teacher shortage"','"learning outcomes"','"school dropout"','"education inequality"'],positive:[]},
-{id:"exams",name:"2. Exams, NTA & National Testing",desc:"NEET-UG, JEE, CUET, UGC-NET, CBSE and national examination failures",anchor:['NTA','NEET','JEE','CUET','"UGC NET"','CBSE','"National Testing Agency"'],negative:['"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಪರೀಕ್ಷಾ ಅಕ್ರಮ"','"ಪರೀಕ್ಷೆ ರದ್ದು"','"ಫಲಿತಾಂಶದಲ್ಲಿ ತಪ್ಪು"','"ಪರೀಕ್ಷಾ ಗೊಂದಲ"','"पेपर लीक"','"परीक्षा में धांधली"','"परीक्षा रद्द"','"परीक्षा में गड़बड़ी"','"paper leak"','"question paper leak"','"exam scam"','"NTA failure"','"exam irregularity"','"exam cancellation"','"re-examination"','"result manipulation"','"answer key error"','"technical glitch"'],positive:[]},
-{id:"institutions",name:"3. Central Institutions & Student Welfare",desc:"IITs, NITs, central universities, UGC/AICTE and student safety, discrimination and campus issues",anchor:['IIT','NIT','IIIT','IISER','IISc','IIM','"Central University"','UGC','AICTE','JNU','BHU','AMU'],negative:['"ವಿದ್ಯಾರ್ಥಿ ಸಾವು"','"ವಿದ್ಯಾರ್ಥಿ ಆತ್ಮಹತ್ಯೆ"','"ಜಾತಿ ತಾರತಮ್ಯ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಪ್ರತಿಭಟನೆ"','"ಕ್ಯಾಂಪಸ್ ಹಿಂಸೆ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"जातिगत भेदभाव"','"छात्र की मौत"','"छात्र आत्महत्या"','"student death"','"IIT student death"','"student suicide"','"campus death"','"caste discrimination"','"caste bias"','"Dalit student"','"SC ST student"','"institutional negligence"','"student protest"','"fee hike"','ragging','harassment','"campus violence"'],positive:[]},
-{id:"narrative",name:"4. Narrative, Controversy & Public Backlash",desc:"Cross-cutting negative narratives across central education institutions: campus incidents, student deaths, protests, discrimination, negligence, allegations and public backlash",anchor:['IIT','"IIT Delhi"','"IIT Bombay"','"IIT Madras"','"IIT Kanpur"','"IIT Kharagpur"','"IIT Roorkee"','"IIT Guwahati"','"IIT Hyderabad"','NIT','IIIT','IISER','IISc','IIM','"Central University"','JNU','BHU','AMU','UGC','AICTE','NTA','NCERT','CBSE','NIOS','NCTE','KVS','NVS'],negative:['"student death"','"student suicide"','"student found dead"','"death of student"','"IIT campus"','"campus death"','"student death protest"','"justice for student"','"students demand justice"','"campus protest"','"student protest"','"institutional negligence"','"administrative negligence"','"caste discrimination"','"discrimination allegation"','"harassment allegation"','"sexual harassment"','"ragging case"','"cover up"','"accountability demand"','"public outrage"','"student safety"','"hostel conditions"','"hostel food"','"fee hike protest"','"faculty misconduct"','"corruption allegation"','"management failure"','"छात्र की मौत"','"छात्र आत्महत्या"','"छात्र की संदिग्ध मौत"','"कैंपस में मौत"','"छात्र की मौत पर प्रदर्शन"','"छात्र को न्याय"','"छात्रों का प्रदर्शन"','"संस्थान की लापरवाही"','"प्रशासन की लापरवाही"','"जातिगत भेदभाव"','"उत्पीड़न का आरोप"','"यौन उत्पीड़न"','"रैगिंग का मामला"','"जवाबदेही की मांग"','"छात्र सुरक्षा"','"छात्रावास की बदहाली"','"फीस वृद्धि का विरोध"','"प्रबंधन की विफलता"','"ವಿದ್ಯಾರ್ಥಿ ಸಾವು"','"ವಿದ್ಯಾರ್ಥಿ ಆತ್ಮಹತ್ಯೆ"','"ವಿದ್ಯಾರ್ಥಿ ಅನುಮಾನಾಸ್ಪದ ಸಾವು"','"ಕ್ಯಾಂಪಸ್‌ನಲ್ಲಿ ಸಾವು"','"ವಿದ್ಯಾರ್ಥಿ ಸಾವಿನ ವಿರುದ್ಧ ಪ್ರತಿಭಟನೆ"','"ವಿದ್ಯಾರ್ಥಿಗೆ ನ್ಯಾಯ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ಆಡಳಿತದ ನಿರ್ಲಕ್ಷ್ಯ"','"ಜಾತಿ ತಾರತಮ್ಯ"','"ಕಿರುಕುಳದ ಆರೋಪ"','"ಲೈಂಗಿಕ ಕಿರುಕುಳ"','"ರ್ಯಾಗಿಂಗ್ ಪ್ರಕರಣ"','"ಹೊಣೆಗಾರಿಕೆಗೆ ಆಗ್ರಹ"','"ವಿದ್ಯಾರ್ಥಿ ಸುರಕ್ಷತೆ"','"ಹಾಸ್ಟೆಲ್ ಅವ್ಯವಸ್ಥೆ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ ವಿರೋಧ"','"ನಿರ್ವಹಣೆಯ ವೈಫಲ್ಯ"'],positive:[]},
-{id:"schemes",name:"4. School Schemes, PM POSHAN & Mid-Day Meal",desc:"PM POSHAN, Mid-Day Meal, Samagra Shiksha and central school-scheme implementation",anchor:['#PMPOSHAN','#PMPoshan','#MidDayMeal','#MidDayMeals','"PM POSHAN"','"Mid-Day Meal"','"Mid Day Meal"','"midday meal"','"मिड डे मील"','"मध्याह्न भोजन"','"Samagra Shiksha"','DoSEL','"Ministry of Education"'],negative:['"ಊಟದಲ್ಲಿ ವಿಷ"','"ಕೆಟ್ಟ ಆಹಾರ"','"ಆಹಾರದಲ್ಲಿ ಹುಳುಗಳು"','"ಊಟ ನೀಡಿಲ್ಲ"','"ಮಧ್ಯಾಹ್ನದ ಊಟದಲ್ಲಿ ಅಕ್ರಮ"','"ಹಣ ದುರುಪಯೋಗ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿ ಪ್ರತಿಭಟನೆ"','"ಮಿಡ್ಡೇ ಮೀಲ್ಸ್ ಅವ್ಯವಹಾರ"','"मिड डे मील में गड़बड़ी"','"खाने में कीड़े"','"खराब भोजन"','"भोजन नहीं मिला"','"दूषित भोजन"','"भोजन में अनियमितता"','"मध्याह्न भोजन में भ्रष्टाचार"','"भुगतान में देरी"','"फंड में देरी"','"पीएम पोषण योजना"','"भोजन में जातिगत भेदभाव"','"food poisoning"','"rotten food"','"contaminated food"','worms','insects','"poor food quality"','"meal not served"','"meal irregularities"','"mid day meal corruption"','"fund misuse"','"fund delay"','"payment delay"','"cooks protest"','"cooks unpaid"','"Akshaya Patra controversy"','"scheme implementation failure"'],positive:[]},
-{id:"reports",name:"5. Education Reports, Data & Audit Findings",desc:"ASER, AISHE, UDISE+, NAS, PARAKH, CAG and parliamentary education reports",anchor:['ASER','AISHE','UDISE','NAS','PARAKH','"CAG report"','"education report"','"Parliamentary Committee"','"Ministry of Education"'],negative:['"ವರದಿಯಲ್ಲಿ ಬಹಿರಂಗ"','"ಕಲಿಕೆಯ ಗುಣಮಟ್ಟ ಕುಸಿತ"','"ಶಿಕ್ಷಣ ಬಿಕ್ಕಟ್ಟು"','"ಶಿಕ್ಷಕರ ಹುದ್ದೆ ಖಾಲಿ"','"ಶಾಲಾ ಮೂಲಸೌಕರ್ಯ ಕೊರತೆ"','"ಲೆಕ್ಕಪರಿಶೋಧನೆ ಆಕ್ಷೇಪ"','"रिपोर्ट में खुलासा"','"शिक्षा रिपोर्ट"','"शिक्षा की गुणवत्ता पर सवाल"','"शिक्षा व्यवस्था पर सवाल"','"report flags"','"report reveals"','"report exposes"','"poor learning outcomes"','"learning crisis"','"low enrolment"','"dropout rate"','"teacher vacancy"','"school infrastructure"','"education quality"','"funding gap"','"audit objection"','"CAG findings"'],positive:[]}
+{id:"ministry",name:"1. Ministry, Policy & Governance",desc:"Union Ministry, NEP, national policy, budget, implementation and governance",anchor:{en:['"Ministry of Education"','"Education Ministry"','"Department of School Education"','"Department of Higher Education"','"NEP 2020"','"National Education Policy"','"Samagra Shiksha"'],hi:['"शिक्षा मंत्रालय"','"केंद्रीय शिक्षा मंत्रालय"','"स्कूल शिक्षा विभाग"','"उच्च शिक्षा विभाग"','"राष्ट्रीय शिक्षा नीति"','"शिक्षा नीति"','"समग्र शिक्षा"'],kn:['"ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ"','"ಕೇಂದ್ರ ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ"','"ಶಾಲಾ ಶಿಕ್ಷಣ ಇಲಾಖೆ"','"ಉನ್ನತ ಶಿಕ್ಷಣ ಇಲಾಖೆ"','"ರಾಷ್ಟ್ರೀಯ ಶಿಕ್ಷಣ ನೀತಿ"','"ಶಿಕ್ಷಣ ನೀತಿ"','"ಸಮಗ್ರ ಶಿಕ್ಷಣ"']},negative:{en:['"policy failure"','"implementation failure"','"ministry negligence"','"funding crisis"','"budget cut"','"teacher shortage"','"education inequality"','"unfilled posts"','"parliament criticism"','"audit objection','corruption','scam'],hi:['"नीति की विफलता"','"कार्यान्वयन में विफलता"','"मंत्रालय की लापरवाही"','"फंड की कमी"','"बजट में कटौती"','"शिक्षकों की कमी"','"शिक्षा में असमानता"','"खाली पद"','"संसद में आलोचना"','"ऑडिट में आपत्ति"','भ्रष्टाचार','घोटाला'],kn:['"ನೀತಿ ವೈಫಲ್ಯ"','"ಅನುಷ್ಠಾನ ವೈಫಲ್ಯ"','"ಸಚಿವಾಲಯದ ನಿರ್ಲಕ್ಷ್ಯ"','"ಹಣಕಾಸಿನ ಕೊರತೆ"','"ಬಜೆಟ್ ಕಡಿತ"','"ಶಿಕ್ಷಕರ ಕೊರತೆ"','"ಶಿಕ್ಷಣ ಅಸಮಾನತೆ"','"ಖಾಲಿ ಹುದ್ದೆಗಳು"','"ಸಂಸತ್ತಿನಲ್ಲಿ ಟೀಕೆ"','"ಲೆಕ್ಕಪರಿಶೋಧನೆ ಆಕ್ಷೇಪ"','ಭ್ರಷ್ಟಾಚಾರ','ಹಗರಣ']},positive:{en:['policy approved','new initiative','reform launched','funds released','scholarship announced','infrastructure upgrade'],hi:['नई नीति को मंजूरी','नई पहल','सुधार शुरू','फंड जारी','छात्रवृत्ति की घोषणा','बुनियादी ढांचे का उन्नयन'],kn:['ಹೊಸ ನೀತಿಗೆ ಅನುಮೋದನೆ','ಹೊಸ ಉಪಕ್ರಮ','ಸುಧಾರಣೆ ಆರಂಭ','ಅನುದಾನ ಬಿಡುಗಡೆ','ವಿದ್ಯಾರ್ಥಿವೇತನ ಘೋಷಣೆ','ಮೂಲಸೌಕರ್ಯ ಅಭಿವೃದ್ಧಿ']},neutral:{en:['official notification','guidelines','meeting','review meeting','advisory','data release','application dates'],hi:['आधिकारिक अधिसूचना','दिशानिर्देश','बैठक','समीक्षा बैठक','एडवाइजरी','आंकड़े जारी','आवेदन तिथि'],kn:['ಅಧಿಕೃತ ಅಧಿಸೂಚನೆ','ಮಾರ್ಗಸೂಚಿಗಳು','ಸಭೆ','ಪರಿಶೀಲನಾ ಸಭೆ','ಸಲಹೆ','ದತ್ತಾಂಶ ಬಿಡುಗಡೆ','ಅರ್ಜಿ ದಿನಾಂಕ']}},
+{id:"higher",name:"2. Higher Education & Regulators",desc:"UGC, AICTE, higher education regulation, universities, accreditation and funding",anchor:{en:['UGC','AICTE','"Higher Education"','"University Grants Commission"','"All India Council for Technical Education"'],hi:['UGC','AICTE','"उच्च शिक्षा"','"विश्वविद्यालय अनुदान आयोग"','"अखिल भारतीय तकनीकी शिक्षा परिषद"'],kn:['UGC','AICTE','"ಉನ್ನತ ಶಿಕ್ಷಣ"','"ವಿಶ್ವವಿದ್ಯಾಲಯ ಅನುದಾನ ಆಯೋಗ"','"ಅಖಿಲ ಭಾರತ ತಾಂತ್ರಿಕ ಶಿಕ್ಷಣ ಮಂಡಳಿ"']},negative:{en:['corruption','scam','irregularities','"financial irregularity"','"recruitment scam"','"fake accreditation"','"recognition cancelled"','"fund misuse"','"regulatory failure"','"faculty shortage"','"fee hike"','protest'],hi:['भ्रष्टाचार','घोटाला','अनियमितता','"वित्तीय गड़बड़ी"','"भर्ती घोटाला"','"फर्जी मान्यता"','"मान्यता रद्द"','"फंड का दुरुपयोग"','"नियामक विफलता"','"शिक्षकों की कमी"','"फीस वृद्धि"','प्रदर्शन'],kn:['ಭ್ರಷ್ಟಾಚಾರ','ಹಗರಣ','ಅಕ್ರಮಗಳು','"ಹಣಕಾಸಿನ ಅಕ್ರಮ"','"ನೇಮಕಾತಿ ಹಗರಣ"','"ನಕಲಿ ಮಾನ್ಯತೆ"','"ಮಾನ್ಯತೆ ರದ್ದು"','"ಅನುದಾನ ದುರುಪಯೋಗ"','"ನಿಯಂತ್ರಣ ವೈಫಲ್ಯ"','"ಬೋಧಕರ ಕೊರತೆ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ"','ಪ್ರತಿಭಟನೆ']},positive:{en:['new regulation','approval granted','accreditation granted','research funding','scholarship','reform announced'],hi:['नया नियम','मंजूरी मिली','मान्यता प्रदान','शोध अनुदान','छात्रवृत्ति','सुधार की घोषणा'],kn:['ಹೊಸ ನಿಯಮ','ಅನುಮೋದನೆ ದೊರೆತಿದೆ','ಮಾನ್ಯತೆ ನೀಡಲಾಗಿದೆ','ಸಂಶೋಧನಾ ಅನುದಾನ','ವಿದ್ಯಾರ್ಥಿವೇತನ','ಸುಧಾರಣೆ ಘೋಷಣೆ']},neutral:{en:['public notice','draft regulation','consultation','circular','university ranking','admission notification'],hi:['सार्वजनिक सूचना','मसौदा नियम','परामर्श','परिपत्र','विश्वविद्यालय रैंकिंग','प्रवेश अधिसूचना'],kn:['ಸಾರ್ವಜನಿಕ ಸೂಚನೆ','ಕರಡು ನಿಯಮ','ಸಮಾಲೋಚನೆ','ಸುತ್ತೋಲೆ','ವಿಶ್ವವಿದ್ಯಾಲಯ ಶ್ರೇಯಾಂಕ','ಪ್ರವೇಶ ಅಧಿಸೂಚನೆ']}},
+{id:"exams",name:"3. Exams, NTA & National Testing",desc:"NTA, NEET-UG, JEE, CUET, UGC-NET, CBSE and national examination processes",anchor:{en:['NTA','NEET','"NEET-UG"','JEE','CUET','"UGC NET"','CBSE','"National Testing Agency"'],hi:['NTA','NEET','"नीट यूजी"','JEE','CUET','"यूजीसी नेट"','CBSE','"राष्ट्रीय परीक्षण एजेंसी"'],kn:['NTA','NEET','"ನೀಟ್ ಯುಜಿ"','JEE','CUET','"ಯುಜಿಸಿ ನೆಟ್"','CBSE','"ರಾಷ್ಟ್ರೀಯ ಪರೀಕ್ಷಾ ಸಂಸ್ಥೆ"']},negative:{en:['"paper leak"','"question paper leak"','"exam scam"','"exam irregularity"','"exam cancellation"','"result error"','"answer key error"','"technical glitch"','"re-examination"','"mass cheating"','"NTA failure"'],hi:['"पेपर लीक"','"प्रश्नपत्र लीक"','"परीक्षा में धांधली"','"परीक्षा में अनियमितता"','"परीक्षा रद्द"','"परिणाम में गड़बड़ी"','"आंसर की में गलती"','"तकनीकी गड़बड़ी"','"दोबारा परीक्षा"','"सामूहिक नकल"','"NTA की विफलता"'],kn:['"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಪರೀಕ್ಷಾ ಹಗರಣ"','"ಪರೀಕ್ಷಾ ಅಕ್ರಮ"','"ಪರೀಕ್ಷೆ ರದ್ದು"','"ಫಲಿತಾಂಶದ ದೋಷ"','"ಉತ್ತರ ಕೀ ದೋಷ"','"ತಾಂತ್ರಿಕ ದೋಷ"','"ಮರು ಪರೀಕ್ಷೆ"','"ಸಾಮೂಹಿಕ ನಕಲು"','"NTA ವೈಫಲ್ಯ"']},positive:{en:['result declared','exam conducted smoothly','registration opened','answer key released','revised schedule','record applications'],hi:['परिणाम घोषित','परीक्षा शांतिपूर्ण संपन्न','पंजीकरण शुरू','आंसर की जारी','संशोधित कार्यक्रम','रिकॉर्ड आवेदन'],kn:['ಫಲಿತಾಂಶ ಪ್ರಕಟ','ಪರೀಕ್ಷೆ ಸುಗಮವಾಗಿ ನಡೆಯಿತು','ನೋಂದಣಿ ಆರಂಭ','ಉತ್ತರ ಕೀ ಬಿಡುಗಡೆ','ಪರಿಷ್ಕೃತ ವೇಳಾಪಟ್ಟಿ','ದಾಖಲೆ ಅರ್ಜಿಗಳು']},neutral:{en:['exam schedule','admit card','application form','exam dates','official notice','eligibility criteria'],hi:['परीक्षा कार्यक्रम','प्रवेश पत्र','आवेदन फॉर्म','परीक्षा तिथि','आधिकारिक सूचना','पात्रता मानदंड'],kn:['ಪರೀಕ್ಷಾ ವೇಳಾಪಟ್ಟಿ','ಪ್ರವೇಶ ಪತ್ರ','ಅರ್ಜಿ ನಮೂನೆ','ಪರೀಕ್ಷಾ ದಿನಾಂಕ','ಅಧಿಕೃತ ಸೂಚನೆ','ಅರ್ಹತಾ ಮಾನದಂಡ']}},
+{id:"institutions",name:"4. Central Institutions & Student Welfare",desc:"IIT, NIT, IIIT, IISER, IISc, IIM and Central Universities; campus safety and student issues",anchor:{en:['IIT','NIT','IIIT','IISER','IISc','IIM','"Central University"','JNU','BHU','AMU'],hi:['IIT','NIT','IIIT','IISER','IISc','IIM','"केंद्रीय विश्वविद्यालय"','JNU','BHU','AMU'],kn:['IIT','NIT','IIIT','IISER','IISc','IIM','"ಕೇಂದ್ರ ವಿಶ್ವವಿದ್ಯಾಲಯ"','JNU','BHU','AMU']},negative:{en:['"student suicide"','"student death"','"found dead"','"caste discrimination"','"campus violence"','ragging','harassment','"hostel food poisoning"','"student protest"','"institutional negligence"','"fee hike"','"faculty shortage"'],hi:['"छात्र आत्महत्या"','"छात्र की मौत"','"मृत पाया गया"','"जातिगत भेदभाव"','"कैंपस हिंसा"','रैगिंग','उत्पीड़न','"छात्रावास में फूड पॉइजनिंग"','"छात्रों का प्रदर्शन"','"संस्थान की लापरवाही"','"फीस वृद्धि"','"शिक्षकों की कमी"'],kn:['"ವಿದ್ಯಾರ್ಥಿ ಆತ್ಮಹತ್ಯೆ"','"ವಿದ್ಯಾರ್ಥಿ ಸಾವು"','"ಮೃತ ಸ್ಥಿತಿಯಲ್ಲಿ ಪತ್ತೆ"','"ಜಾತಿ ತಾರತಮ್ಯ"','"ಕ್ಯಾಂಪಸ್ ಹಿಂಸೆ"','ರ್ಯಾಗಿಂಗ್','ಕಿರುಕುಳ','"ಹಾಸ್ಟೆಲ್ ಆಹಾರ ವಿಷ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ"','"ಬೋಧಕರ ಕೊರತೆ"']},positive:{en:['"placement record"','"research breakthrough"','"new campus facility"','"student achievement"','"innovation award','"international collaboration'],hi:['"प्लेसमेंट रिकॉर्ड"','"शोध में उपलब्धि"','"नई कैंपस सुविधा"','"छात्र उपलब्धि"','"नवाचार पुरस्कार"','"अंतरराष्ट्रीय सहयोग'],kn:['"ಉದ್ಯೋಗ ನೇಮಕಾತಿ ದಾಖಲೆ"','"ಸಂಶೋಧನಾ ಸಾಧನೆ"','"ಹೊಸ ಕ್ಯಾಂಪಸ್ ಸೌಲಭ್ಯ"','"ವಿದ್ಯಾರ್ಥಿ ಸಾಧನೆ"','"ನಾವೀನ್ಯತೆ ಪ್ರಶಸ್ತಿ"','"ಅಂತರರಾಷ್ಟ್ರೀಯ ಸಹಕಾರ"']},neutral:{en:['admission notice','convocation','academic calendar','entrance notification','campus event','research conference'],hi:['प्रवेश सूचना','दीक्षांत समारोह','शैक्षणिक कैलेंडर','प्रवेश परीक्षा अधिसूचना','कैंपस कार्यक्रम','शोध सम्मेलन'],kn:['ಪ್ರವೇಶ ಸೂಚನೆ','ಪದವಿ ಪ್ರದಾನ ಸಮಾರಂಭ','ಶೈಕ್ಷಣಿಕ ಕ್ಯಾಲೆಂಡರ್','ಪ್ರವೇಶ ಪರೀಕ್ಷಾ ಅಧಿಸೂಚನೆ','ಕ್ಯಾಂಪಸ್ ಕಾರ್ಯಕ್ರಮ','ಸಂಶೋಧನಾ ಸಮ್ಮೇಳನ']}},
+{id:"schemes",name:"5. School Education & Central Schemes",desc:"PM POSHAN / Mid-Day Meal, Samagra Shiksha, DoSEL, KVS, NVS and central school schemes",anchor:{en:['"PM POSHAN"','"Mid-Day Meal"','"Mid Day Meal"','"Samagra Shiksha"','DoSEL','KVS','NVS','NCERT'],hi:['"पीएम पोषण"','"मिड डे मील"','"मध्याह्न भोजन"','"समग्र शिक्षा"','DoSEL','KVS','NVS','NCERT'],kn:['"ಪಿಎಂ ಪೋಷಣ್"','"ಮಧ್ಯಾಹ್ನದ ಊಟ"','"ಮಧ್ಯಾಹ್ನದ ಬಿಸಿಯೂಟ"','"ಸಮಗ್ರ ಶಿಕ್ಷಣ"','DoSEL','KVS','NVS','NCERT']},negative:{en:['"food poisoning"','"rotten food"','"contaminated food"','worms','insects','"poor food quality"','"meal not served"','"meal irregularities"','corruption','"fund misuse"','"cooks unpaid"','"caste discrimination"'],hi:['"खाने में कीड़े"','"खराब भोजन"','"दूषित भोजन"','"बच्चे बीमार"','"भोजन नहीं मिला"','"मिड डे मील में गड़बड़ी"','भ्रष्टाचार','"फंड का दुरुपयोग"','"रसोइयों को वेतन नहीं"','"जातिगत भेदभाव"'],kn:['"ಆಹಾರದಲ್ಲಿ ಹುಳುಗಳು"','"ಕೆಟ್ಟ ಆಹಾರ"','"ಕಲುಷಿತ ಆಹಾರ"','"ಮಕ್ಕಳು ಅಸ್ವಸ್ಥ"','"ಊಟ ನೀಡಿಲ್ಲ"','"ಮಧ್ಯಾಹ್ನದ ಊಟದಲ್ಲಿ ಅಕ್ರಮ"','ಭ್ರಷ್ಟಾಚಾರ','"ಹಣ ದುರುಪಯೋಗ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿಗೆ ವೇತನವಿಲ್ಲ"','"ಜಾತಿ ತಾರತಮ್ಯ"']},positive:{en:['"nutritious meals"','"meal quality improved"','"scheme expanded"','"new kitchen"','"beneficiaries increased"'],hi:['"पौष्टिक भोजन"','"भोजन की गुणवत्ता में सुधार"','"योजना का विस्तार"','"नई रसोई"','"लाभार्थियों की संख्या बढ़ी'],kn:['"ಪೌಷ್ಟಿಕ ಆಹಾರ"','"ಊಟದ ಗುಣಮಟ್ಟ ಸುಧಾರಣೆ"','"ಯೋಜನೆ ವಿಸ್ತರಣೆ"','"ಹೊಸ ಅಡುಗೆಮನೆ"','"ಫಲಾನುಭವಿಗಳ ಸಂಖ್ಯೆ ಹೆಚ್ಚಳ"']},neutral:{en:['scheme guidelines','beneficiary data','fund allocation','school inspection','meal menu','implementation review'],hi:['योजना के दिशानिर्देश','लाभार्थी आंकड़े','फंड आवंटन','स्कूल निरीक्षण','भोजन मेन्यू','कार्यान्वयन समीक्षा'],kn:['ಯೋಜನೆ ಮಾರ್ಗಸೂಚಿಗಳು','ಫಲಾನುಭವಿ ದತ್ತಾಂಶ','ಅನುದಾನ ಹಂಚಿಕೆ','ಶಾಲಾ ಪರಿಶೀಲನೆ','ಊಟದ ಮೆನು','ಅನುಷ್ಠಾನ ಪರಿಶೀಲನೆ']}},
+{id:"reports",name:"6. Education Reports, CAG & Audit Findings",desc:"CAG, ASER, AISHE, UDISE+, NAS, PARAKH and Parliamentary education findings",anchor:{en:['CAG','ASER','AISHE','UDISE','NAS','PARAKH','"education report"','"Parliamentary Committee"'],hi:['CAG','कैग','ASER','AISHE','UDISE','NAS','PARAKH','"शिक्षा रिपोर्ट"','"संसदीय समिति"'],kn:['CAG','"ಲೆಕ್ಕ ಪರಿಶೋಧಕ"','ASER','AISHE','UDISE','NAS','PARAKH','"ಶಿಕ್ಷಣ ವರದಿ"','"ಸಂಸದೀಯ ಸಮಿತಿ"']},negative:{en:['"CAG flags"','"CAG report"','"audit irregularities"','"report exposes"','"report reveals"','"fund diversion"','"unspent funds"','"poor learning outcomes"','"teacher vacancies"','"infrastructure gaps"','"implementation failure"'],hi:['"कैग की रिपोर्ट"','"ऑडिट में अनियमितता"','"रिपोर्ट में खुलासा"','"फंड का दुरुपयोग"','"खर्च नहीं हुई राशि"','"सीखने के स्तर में गिरावट"','"शिक्षकों के पद खाली"','"बुनियादी ढांचे की कमी"','"योजना लागू करने में विफलता"'],kn:['"CAG ವರದಿ"','"ಲೆಕ್ಕಪರಿಶೋಧನಾ ಅಕ್ರಮ"','"ವರದಿಯಲ್ಲಿ ಬಹಿರಂಗ"','"ಹಣ ದುರುಪಯೋಗ"','"ಬಳಕೆಯಾಗದ ಅನುದಾನ"','"ಕಲಿಕೆಯ ಫಲಿತಾಂಶ ಕುಸಿತ"','"ಶಿಕ್ಷಕರ ಹುದ್ದೆ ಖಾಲಿ"','"ಮೂಲಸೌಕರ್ಯ ಕೊರತೆ"','"ಯೋಜನೆ ಅನುಷ್ಠಾನ ವೈಫಲ್ಯ"']},positive:{en:['"improvement in learning"','"positive findings"','"literacy improved"','"enrolment increased"','"audit compliance"'],hi:['"सीखने के स्तर में सुधार"','"सकारात्मक निष्कर्ष"','"साक्षरता में सुधार"','"नामांकन बढ़ा"','"ऑडिट अनुपालन"'],kn:['"ಕಲಿಕೆಯ ಮಟ್ಟ ಸುಧಾರಣೆ"','"ಸಕಾರಾತ್ಮಕ ಅಂಶಗಳು"','"ಸಾಕ್ಷರತೆ ಸುಧಾರಣೆ"','"ದಾಖಲಾತಿ ಹೆಚ್ಚಳ"','"ಲೆಕ್ಕಪರಿಶೋಧನಾ ಅನುಸರಣೆ"']},neutral:{en:['report released','annual report','survey findings','official data','statistical report','committee recommendations'],hi:['रिपोर्ट जारी','वार्षिक रिपोर्ट','सर्वेक्षण निष्कर्ष','आधिकारिक आंकड़े','सांख्यिकीय रिपोर्ट','समिति की सिफारिशें'],kn:['ವರದಿ ಬಿಡುಗಡೆ','ವಾರ್ಷಿಕ ವರದಿ','ಸಮೀಕ್ಷೆಯ ಅಂಶಗಳು','ಅಧಿಕೃತ ದತ್ತಾಂಶ','ಅಂಕಿಅಂಶಗಳ ವರದಿ','ಸಮಿತಿಯ ಶಿಫಾರಸುಗಳು']}}
 ];
-const negativeWords=['protest','controversy','criticism','allegation','irregularity','negligence','failure','paper leak','exam dispute','result error','fraud','corruption','scam','harassment','discrimination','data breach','cyber attack','FIR','court order','investigation','fee hike','scholarship delay','student grievance','administrative failure'];
-const positiveWords=['launches','announces','approves','inaugurates','achievement','initiative','guidelines','scholarship','research achievement','official update'];
-const platforms={all:{label:'Google Web',site:''},x:{label:'X',site:'site:x.com'},instagram:{label:'Instagram',site:'site:instagram.com'},facebook:{label:'Facebook',site:'site:facebook.com'},youtube:{label:'YouTube',site:'site:youtube.com'},news:{label:'Digital News / Articles',site:'(site:indianexpress.com OR site:thehindu.com OR site:hindustantimes.com OR site:ndtv.com OR site:timesofindia.indiatimes.com OR site:news18.com OR site:aninews.in OR site:ptinews.com OR site:pib.gov.in)'}};
 const $=id=>document.getElementById(id);
-function quote(t){return '"'+t.replace(/"/g,'')+'"'}
-function selectedCategory(){return categories.find(c=>c.id===$('category').value)||categories[0]}
-function termsFor(c,mode){if(mode==='negative')return c.negative;if(mode==='positive')return c.positive;if(mode==='mixed')return [...c.negative,...['issue','news','update','students']];return [...c.negative,...c.positive]}
-function queryFor(c,platform,mode,extra){
- const anchors=c.anchor.slice(0,9).map(quote).join(' OR ');
- const issues=c.negative.map(quote).join(' OR ');
- let q='('+anchors+') ('+issues+') India';
- if(platform.site)q=platform.site+' '+q;
- if(extra)q+=' '+quote(extra);
- q+=' -jobs -admission -advertisement -vacancy-notification -result-declaration';
- return q;
-}
-function timeUrl(url){const p=$('period').value;if(p==='any')return url;const q=new URL(url);q.searchParams.set('tbs',p==='d'?'qdr:d':p==='w'?'qdr:w':'qdr:m');return q.toString()}
-function makeLink(label,q,platformKey='all'){
- let url;
- if(platformKey==='x') url='https://x.com/search?q='+encodeURIComponent(q)+'&src=typed_query&f=live';
- else url=timeUrl('https://www.google.com/search?q='+encodeURIComponent(q));
- return {label,url,q};
-}
-function chunks(items,size){const out=[];for(let i=0;i<items.length;i+=size)out.push(items.slice(i,i+size));return out}
-function xAnchorQuery(raw){
- let t=raw.replace(/"/g,'').trim();
- t=t.replace(/\\s+India$/i,'').trim();
- const person=t.match(/^(Dharmendra Pradhan|Pralhad Joshi|Prahlad Joshi)\\s+education$/i);
- if(person)return '"'+person[1]+'" education';
- const hindiPerson=t.match(/^(प्रहलाद जोशी|प्रल्हाद जोशी)\\s+शिक्षा$/);
- if(hindiPerson)return '"'+hindiPerson[1]+'" शिक्षा';
- if(/^Ministry of Education$/i.test(t))return '"Ministry of Education"';
- if(/^Education Ministry$/i.test(t))return '"Education Ministry"';
- if(/^(NTA|UGC|AICTE|NCTE|CBSE|NCERT|NIOS|KVS|NVS|IIT|NIT|IIIT|IISER|IISc|IIM|NEET-UG|JEE Main|CUET UG|UGC NET)$/i.test(t))return t;
- return '"'+t+'"';
-}
-function xQueries(c,mode,extra){
- // All category searches are negative-only. Group several issue phrases in each
- // search link instead of creating one link/category per keyword.
- const langOf=s=>/[\\u0C80-\\u0CFF]/.test(s)?'kn':/[\\u0900-\\u097F]/.test(s)?'hi':'en';
- const negativeOnly={
-  ministry:{
-   en:['"education system failure"','"higher education crisis"','"policy failure"','"policy controversy"','"ministry negligence"','"funding crisis"','"budget cut"','"teacher shortage"','"education inequality"','"implementation failure"','"university protest"','"student protest"','"institutional negligence"','"scholarship delay"','"recruitment irregularities"','"fund misuse"','"audit irregularities"','"paper leak"','corruption','scam','"fee hike"','"infrastructure shortage"','"poor learning outcomes"'],
-   hi:['"शिक्षा व्यवस्था की विफलता"','"उच्च शिक्षा संकट"','"शिक्षा नीति पर सवाल"','"मंत्रालय की लापरवाही"','"बजट में कटौती"','"फंड की कमी"','"शिक्षकों की कमी"','"शिक्षक भर्ती में अनियमितता"','"छात्रों का विरोध"','"विश्वविद्यालय में प्रदर्शन"','"संस्थागत लापरवाही"','"छात्रवृत्ति में देरी"','"पेपर लीक"','"भ्रष्टाचार"','"घोटाला"','"शुल्क वृद्धि"','"बुनियादी सुविधाओं की कमी"','"शिक्षा में असमानता"','"परीक्षा में गड़बड़ी"'],
-   kn:['"ಶಿಕ್ಷಣ ವ್ಯವಸ್ಥೆ ವೈಫಲ್ಯ"','"ಉನ್ನತ ಶಿಕ್ಷಣ ಬಿಕ್ಕಟ್ಟು"','"ನೀತಿ ವೈಫಲ್ಯ"','"ಶಿಕ್ಷಣ ಸಚಿವಾಲಯದ ನಿರ್ಲಕ್ಷ್ಯ"','"ಬಜೆಟ್ ಕಡಿತ"','"ಹಣಕಾಸಿನ ಕೊರತೆ"','"ಶಿಕ್ಷಕರ ಕೊರತೆ"','"ಶಿಕ್ಷಕರ ನೇಮಕಾತಿ ಅಕ್ರಮ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಪ್ರತಿಭಟನೆ"','"ವಿಶ್ವವಿದ್ಯಾಲಯ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿದ್ಯಾರ್ಥಿವೇತನ ವಿಳಂಬ"','"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಹಗರಣ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ"','"ಮೂಲಸೌಕರ್ಯ ಕೊರತೆ"','"ಶಿಕ್ಷಣ ಅಸಮಾನತೆ"','"ಪರೀಕ್ಷಾ ಅಕ್ರಮ"']
-  },
-  exams:{
-   en:['"paper leak"','"question paper leak"','"exam scam"','"NTA failure"','"exam irregularity"','"exam cancellation"','"result manipulation"','"answer key error"','"technical glitch"','"re-examination"','"exam mismanagement"','"cheating racket"'],
-   hi:['"पेपर लीक"','"परीक्षा में धांधली"','"परीक्षा रद्द"','"परीक्षा में गड़बड़ी"','"परिणाम में गड़बड़ी"','"आंसर की में गलती"','"परीक्षा कुप्रबंधन"','"नकल गिरोह"','"एनटीए की विफलता"'],
-   kn:['"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಪರೀಕ್ಷಾ ಅಕ್ರಮ"','"ಪರೀಕ್ಷೆ ರದ್ದು"','"ಫಲಿತಾಂಶದಲ್ಲಿ ತಪ್ಪು"','"ಪರೀಕ್ಷಾ ಗೊಂದಲ"','"ಉತ್ತರ ಕೀ ದೋಷ"','"ಪರೀಕ್ಷಾ ಅವ್ಯವಸ್ಥೆ"','"ನಕಲು ಜಾಲ"']
-  },
-  institutions:{
-   en:['"student death"','"student suicide"','"campus death"','"caste discrimination"','"caste bias"','"institutional negligence"','"student protest"','"fee hike"','ragging','harassment','"campus violence"','"hostel food poisoning"','"faculty vacancy"'],
-   hi:['"छात्र की मौत"','"छात्र आत्महत्या"','"जातिगत भेदभाव"','"संस्थान की लापरवाही"','"छात्रों का प्रदर्शन"','"फीस में बढ़ोतरी"','रैगिंग','उत्पीड़न','"कैंपस हिंसा"','"छात्रावास में दूषित भोजन"'],
-   kn:['ವಿದ್ಯಾರ್ಥಿ','ವಿದ್ಯಾರ್ಥಿಗಳ','"ವಿದ್ಯಾರ್ಥಿ ಸಾವು"','"ವಿದ್ಯಾರ್ಥಿ ಆತ್ಮಹತ್ಯೆ"','ಆತ್ಮಹತ್ಯೆ','ಪ್ರತಿಭಟನೆ','"ವಿದ್ಯಾರ್ಥಿ ಪ್ರತಿಭಟನೆ"','"ನ್ಯಾಯಕ್ಕಾಗಿ ಆಗ್ರಹ"','ಅನ್ಯಾಯ','ನಿರ್ಲಕ್ಷ್ಯ','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ಆಡಳಿತದ ನಿರ್ಲಕ್ಷ್ಯ"','ಕಿರುಕುಳ','ರ್ಯಾಗಿಂಗ್','"ಜಾತಿ ತಾರತಮ್ಯ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ"','"ಶುಲ್ಕ ಏರಿಕೆ"','"ಕ್ಯಾಂಪಸ್ ಸಮಸ್ಯೆ"','"ಹಾಸ್ಟೆಲ್ ಸಮಸ್ಯೆ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಆಕ್ರೋಶ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಮೇಲೆ ಹಲ್ಲೆ"','"ವಿದ್ಯಾರ್ಥಿ ಸಾವು ಪ್ರಕರಣ"']
-  },
-  narrative:{
-   en:['"student death"','"student suicide"','"student found dead"','"death of student"','"campus death"','"student death protest"','"justice for student"','"students demand justice"','"campus protest"','"student protest"','"institutional negligence"','"administrative negligence"','"caste discrimination"','"discrimination allegation"','"harassment allegation"','"sexual harassment"','"ragging case"','"cover up"','"accountability demand"','"public outrage"','"student safety"','"hostel conditions"','"fee hike protest"','"faculty misconduct"','"corruption allegation"','"management failure"'],
-   hi:['"छात्र की मौत"','"छात्र आत्महत्या"','"छात्र की संदिग्ध मौत"','"कैंपस में मौत"','"छात्र की मौत पर प्रदर्शन"','"छात्र को न्याय"','"छात्रों का प्रदर्शन"','"संस्थान की लापरवाही"','"प्रशासन की लापरवाही"','"जातिगत भेदभाव"','"उत्पीड़न का आरोप"','"यौन उत्पीड़न"','"रैगिंग का मामला"','"जवाबदेही की मांग"','"छात्र सुरक्षा"','"छात्रावास की बदहाली"','"फीस वृद्धि का विरोध"','"प्रबंधन की विफलता"'],
-   kn:['"ವಿದ್ಯಾರ್ಥಿ ಸಾವು"','"ವಿದ್ಯಾರ್ಥಿ ಆತ್ಮಹತ್ಯೆ"','"ವಿದ್ಯಾರ್ಥಿ ಅನುಮಾನಾಸ್ಪದ ಸಾವು"','"ಕ್ಯಾಂಪಸ್‌ನಲ್ಲಿ ಸಾವು"','"ವಿದ್ಯಾರ್ಥಿ ಸಾವಿನ ವಿರುದ್ಧ ಪ್ರತಿಭಟನೆ"','"ವಿದ್ಯಾರ್ಥಿಗೆ ನ್ಯಾಯ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ಆಡಳಿತದ ನಿರ್ಲಕ್ಷ್ಯ"','"ಜಾತಿ ತಾರತಮ್ಯ"','"ಕಿರುಕುಳದ ಆರೋಪ"','"ಲೈಂಗಿಕ ಕಿರುಕುಳ"','"ರ್ಯಾಗಿಂಗ್ ಪ್ರಕರಣ"','"ಹೊಣೆಗಾರಿಕೆಗೆ ಆಗ್ರಹ"','"ವಿದ್ಯಾರ್ಥಿ ಸುರಕ್ಷತೆ"','"ಹಾಸ್ಟೆಲ್ ಅವ್ಯವಸ್ಥೆ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ ವಿರೋಧ"','"ನಿರ್ವಹಣೆಯ ವೈಫಲ್ಯ"']
-  },
-  schemes:{
-   en:['"food poisoning"','"rotten food"','"contaminated food"','worms','insects','"poor food quality"','"meal not served"','"meal irregularities"','"mid day meal corruption"','"fund misuse"','"fund delay"','"payment delay"','"cooks protest"','"cooks unpaid"','"caste discrimination"','"scheme implementation failure"'],
-   hi:['"खाने में कीड़े"','"खराब भोजन"','"भोजन नहीं मिला"','"दूषित भोजन"','"भोजन में अनियमितता"','"मध्याह्न भोजन में भ्रष्टाचार"','"भुगतान में देरी"','"फंड में देरी"','"रसोइयों का प्रदर्शन"','"रसोइयों को वेतन नहीं"','"जातिगत भेदभाव"','"योजना लागू करने में विफलता"'],
-   kn:['"ಊಟದಲ್ಲಿ ವಿಷ"','"ಕೆಟ್ಟ ಆಹಾರ"','"ಆಹಾರದಲ್ಲಿ ಹುಳುಗಳು"','"ಊಟ ನೀಡಿಲ್ಲ"','"ಮಧ್ಯಾಹ್ನದ ಊಟದಲ್ಲಿ ಅಕ್ರಮ"','"ಹಣ ದುರುಪಯೋಗ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿ ಪ್ರತಿಭಟನೆ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿಗೆ ವೇತನವಿಲ್ಲ"','"ಜಾತಿ ತಾರತಮ್ಯ"','"ಯೋಜನೆ ಅನುಷ್ಠಾನ ವೈಫಲ್ಯ"']
-  },
-  reports:{
-   en:['"poor learning outcomes"','"learning crisis"','"low enrolment"','"high dropout rate"','"teacher vacancy"','"school infrastructure shortage"','"education quality crisis"','"funding gap"','"audit objection"','"CAG irregularities"','"report exposes failure"','"parliamentary panel criticism"'],
-   hi:['"सीखने के स्तर में गिरावट"','"शिक्षा संकट"','"कम नामांकन"','"स्कूल छोड़ने की दर में वृद्धि"','"शिक्षकों के पद खाली"','"स्कूलों में बुनियादी सुविधाओं की कमी"','"शिक्षा की गुणवत्ता पर सवाल"','"फंड की कमी"','"ऑडिट में अनियमितता"','"कैग की आपत्तियां"','"रिपोर्ट में विफलता का खुलासा"'],
-   kn:['"ಕಲಿಕೆಯ ಫಲಿತಾಂಶ ಕುಸಿತ"','"ಕಲಿಕಾ ಬಿಕ್ಕಟ್ಟು"','"ಕಡಿಮೆ ದಾಖಲಾತಿ"','"ಶಾಲೆ ಬಿಡುವವರ ಪ್ರಮಾಣ ಹೆಚ್ಚಳ"','"ಶಿಕ್ಷಕರ ಹುದ್ದೆ ಖಾಲಿ"','"ಶಾಲಾ ಮೂಲಸೌಕರ್ಯ ಕೊರತೆ"','"ಶಿಕ್ಷಣ ಗುಣಮಟ್ಟದ ಬಿಕ್ಕಟ್ಟು"','"ಹಣಕಾಸಿನ ಕೊರತೆ"','"ಲೆಕ್ಕಪರಿಶೋಧನೆ ಆಕ್ಷೇಪ"','"ವರದಿಯಲ್ಲಿ ವೈಫಲ್ಯ ಬಹಿರಂಗ"']
-  }
- };
- const anchors={
-  ministry:{
-   en:'("Ministry of Education" OR "Education Ministry" OR "Higher Education" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE)',
-   hi:'("शिक्षा मंत्रालय" OR "उच्च शिक्षा" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS)',
-   kn:'("ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ" OR "ಉನ್ನತ ಶಿಕ್ಷಣ" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS)'
-  },
-  exams:{en:'(NTA OR NEET OR JEE OR CUET OR "UGC NET" OR CBSE)',hi:'(NTA OR NEET OR JEE OR CUET OR "UGC NET" OR CBSE)',kn:'(NTA OR NEET OR JEE OR CUET OR "UGC NET" OR CBSE)'},
-  institutions:{en:'(IIT OR NIT OR IIIT OR IISER OR IISc OR IIM OR UGC OR AICTE OR "Central University")',hi:'(IIT OR NIT OR IIIT OR IISER OR IISc OR IIM OR UGC OR AICTE OR "केंद्रीय विश्वविद्यालय")',kn:'(IIT OR NIT OR IIIT OR IISER OR IISc OR IIM OR UGC OR AICTE OR "ಕೇಂದ್ರ ವಿಶ್ವವಿದ್ಯಾಲಯ")'},
-  narrative:{en:'(IIT OR "IIT Delhi" OR "IIT Bombay" OR "IIT Madras" OR "IIT Kanpur" OR "IIT Kharagpur" OR "IIT Roorkee" OR "IIT Guwahati" OR "IIT Hyderabad" OR NIT OR IIIT OR IISER OR IISc OR IIM OR "Central University" OR JNU OR BHU OR AMU OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE)',hi:'(IIT OR "IIT Delhi" OR "IIT Bombay" OR NIT OR IIIT OR IISER OR IISc OR IIM OR "केंद्रीय विश्वविद्यालय" OR JNU OR BHU OR AMU OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS)',kn:'(IIT OR "IIT Delhi" OR "IIT Bombay" OR NIT OR IIIT OR IISER OR IISc OR IIM OR "ಕೇಂದ್ರ ವಿಶ್ವವಿದ್ಯಾಲಯ" OR JNU OR BHU OR AMU OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS)'},
-  schemes:{en:'(#PMPOSHAN OR #MidDayMeal OR "PM POSHAN" OR "Mid-Day Meal" OR "Mid Day Meal")',hi:'(#PMPOSHAN OR #MidDayMeal OR "पीएम पोषण" OR "मिड डे मील" OR "मध्याह्न भोजन")',kn:'(#PMPOSHAN OR #MidDayMeal OR "ಪಿಎಂ ಪೋಷಣ್" OR "ಮಧ್ಯಾಹ್ನದ ಊಟ" OR "ಮಧ್ಯಾಹ್ನದ ಬಿಸಿಯೂಟ")'},
-  reports:{en:'(ASER OR AISHE OR UDISE OR NAS OR PARAKH OR CAG OR "education report")',hi:'(ASER OR AISHE OR UDISE OR NAS OR PARAKH OR CAG OR "शिक्षा रिपोर्ट")',kn:'(ASER OR AISHE OR UDISE OR NAS OR PARAKH OR CAG OR "ಶಿಕ್ಷಣ ವರದಿ")'}
- };
- const key=negativeOnly[c.id]?c.id:'ministry';
+const langs=[['en','English'],['hi','हिंदी'],['kn','ಕನ್ನಡ']];
+function quoteTerm(s){return /^(#|[A-Z0-9-]+$)/.test(s)?s:s;}
+function getTerms(c,sent,lang){if(sent==='all')return [...c.negative[lang],...c.positive[lang],...c.neutral[lang]];return c[sent][lang]||[];}
+function makeQueries(c,sent,extra){
  const out=[];
- for(const lang of ['en','hi','kn']){
-  const terms=negativeOnly[key][lang]||[];
-  let group=[];
-  const emit=()=>{if(!group.length)return;let q=anchors[key][lang]+' ('+group.join(' OR ')+')';if(extra)q+=' "'+extra.replace(/"/g,'')+'"';out.push({label:'X · '+c.name+' · '+({en:'English negative issues',hi:'हिंदी नकारात्मक मुद्दे',kn:'ಕನ್ನಡ ನಕಾರಾತ್ಮಕ ಸಮಸ್ಯೆಗಳು'}[lang]),q});group=[];};
-  for(const term of terms){
-   const candidate=group.concat(term);
-   const q=anchors[key][lang]+' ('+candidate.join(' OR ')+')';
-   if(q.length>245 && group.length)emit();
-   group.push(term);
-  }
+ for(const [lang,label] of langs){
+  const anchors=c.anchor[lang];const terms=getTerms(c,sent,lang);
+  const anchor='('+anchors.join(' OR ')+')';
+  let batch=[];
+  const emit=()=>{if(!batch.length)return;let q=anchor+' ('+batch.join(' OR ')+')';if(extra)q+=' "'+extra.replace(/"/g,'')+'"';out.push({label:label+' · '+(sent==='negative'?'Negative priority':sent==='positive'?'Positive':sent==='neutral'?'Neutral':'All updates'),q,lang});batch=[];};
+  for(const term of terms){const test=anchor+' ('+batch.concat(term).join(' OR ')+')';if(test.length>430&&batch.length)emit();batch.push(term);}
   emit();
  }
  return out;
 }
+function periodUrl(url){const p=$('period').value;if(p==='any')return url;const q=new URL(url);q.searchParams.set('tbs',p==='d'?'qdr:d':p==='w'?'qdr:w':'qdr:m');return q.toString();}
 function renderLinks(){
- const c=selectedCategory(),key=$('platform').value,p=platforms[key],mode=$('sentiment').value,extra=$('extra').value.trim();
+ const c=categories.find(x=>x.id===$('category').value)||categories[0],platform=$('platform').value,sent=$('sentiment').value,extra=$('extra').value.trim();
+ const qs=makeQueries(c,sent,extra);$('mainQuery').textContent=qs.map(x=>'['+x.label+']\n'+x.q).join('\n\n');
  const links=[];
- if(key==='x'){
-  const qs=xQueries(c,mode,extra);
-  $('mainQuery').textContent=qs.map(x=>x.q).join('\n\n');
-  qs.forEach(x=>links.push(makeLink(x.label,x.q,'x')));
- }else{
-  const q=queryFor(c,p,mode,extra);$('mainQuery').textContent=q;
-  if(key==='all'){
-   Object.entries(platforms).forEach(([k,pl])=>{if(k==='all')return;links.push(makeLink(pl.label,queryFor(c,pl,mode,extra)))});
-   links.unshift(makeLink('Google Web — all public results',q));
-  }else links.push(makeLink(p.label,q));
-  if(key!=='news'&&key!=='all')links.push(makeLink('Google Web — same category',queryFor(c,platforms.all,mode,extra)));
+ for(const item of qs){
+  let url;
+  if(platform==='x')url='https://x.com/search?q='+encodeURIComponent(item.q)+'&src=typed_query&f=live';
+  else {let site=platform==='all'?'':platform==='instagram'?' site:instagram.com':platform==='facebook'?' site:facebook.com':platform==='youtube'?' site:youtube.com':platform==='news'?' (site:indianexpress.com OR site:thehindu.com OR site:timesofindia.indiatimes.com OR site:pti.in OR site:aninews.in)':'';url=periodUrl('https://www.google.com/search?q='+encodeURIComponent(item.q+site));}
+  links.push({label:item.label,url});
  }
- $('results').innerHTML=links.map(x=>'<div class="linkitem"><div><strong>'+x.label+'</strong><small>Opens search in a new tab</small></div><a href="'+x.url+'" target="_blank" rel="noopener">Open search ↗</a></div>').join('');
+ $('results').innerHTML=links.map(x=>'<div class="linkitem"><div><strong>'+x.label+'</strong><small>Opens '+(platform==='x'?'X':'Google')+' search in a new tab</small></div><a href="'+x.url+'" target="_blank" rel="noopener">Open search ↗</a></div>').join('');
 }
 function renderCategories(){
  $('category').innerHTML=categories.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
  $('categoryList').innerHTML=categories.map(c=>'<button class="category" data-cat="'+c.id+'"><strong>'+c.name+'</strong><span>'+c.desc+'</span></button>').join('');
- $('categoryList').querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{$('category').value=b.dataset.cat;document.querySelectorAll('.category').forEach(x=>x.classList.toggle('selected',x===b));renderLinks()}));
- $('keywordLibrary').innerHTML=categories.map(c=>'<div class="panel"><h3>'+c.name+'</h3><p class="muted small">'+c.desc+'</p><strong>Institution / subject anchors</strong><div class="chips">'+c.anchor.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div><strong style="display:block;margin-top:10px">Negative / issue keywords (priority)</strong><div class="chips">'+c.negative.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div><strong style="display:block;margin-top:10px">Positive / routine updates (lower priority)</strong><div class="chips">'+c.positive.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div></div>').join('');
- $('catCount').textContent=categories.length;
+ $('categoryList').querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{$('category').value=b.dataset.cat;renderLinks();syncSelected();}));
+ $('keywordLibrary').innerHTML=categories.map(c=>'<div class="panel"><h3>'+c.name+'</h3><p class="muted small">'+c.desc+'</p>'+langs.map(([k,l])=>'<strong>'+l+' anchors</strong><div class="chips">'+c.anchor[k].map(x=>'<span class="chip">'+x+'</span>').join('')+'</div><strong style="display:block;margin-top:9px">'+l+' · Negative keywords</strong><div class="chips">'+c.negative[k].map(x=>'<span class="chip">'+x+'</span>').join('')+'</div><strong style="display:block;margin-top:9px">'+l+' · Positive / Neutral keywords</strong><div class="chips">'+c.positive[k].concat(c.neutral[k]).map(x=>'<span class="chip">'+x+'</span>').join('')+'</div>').join('')+'</div>').join('');
+ $('catCount').textContent=categories.length;syncSelected();
 }
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['search','keywords','guidelines'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab))}));
-$('build').addEventListener('click',renderLinks);
-$('category').addEventListener('change',renderLinks);$('platform').addEventListener('change',renderLinks);$('sentiment').addEventListener('change',renderLinks);$('period').addEventListener('change',renderLinks);
+function syncSelected(){document.querySelectorAll('[data-cat]').forEach(b=>b.classList.toggle('selected',b.dataset.cat===$('category').value));}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['search','keywords','guidelines'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab));}));
+$('build').addEventListener('click',renderLinks);$('category').addEventListener('change',()=>{syncSelected();renderLinks();});$('platform').addEventListener('change',renderLinks);$('sentiment').addEventListener('change',renderLinks);$('period').addEventListener('change',renderLinks);
 $('copyQuery').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('mainQuery').textContent);$('copyQuery').textContent='Copied';setTimeout(()=>$('copyQuery').textContent='Copy main query',1300)}catch{$('copyQuery').textContent='Select and copy query'}});
 renderCategories();$('category').value='ministry';$('platform').value='x';$('sentiment').value='negative';renderLinks();
-</script>
-</body>
-</html>
+</script></body></html>
