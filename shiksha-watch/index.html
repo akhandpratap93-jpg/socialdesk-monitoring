@@ -64,7 +64,7 @@ function makeQueries(c,sent,extra){
   const anchor='('+anchors.join(' OR ')+')';
   let batch=[];
   const emit=()=>{if(!batch.length)return;let q=anchor+' ('+batch.join(' OR ')+')';if(extra)q+=' "'+extra.replace(/"/g,'')+'"';out.push({label:label+' · '+(sent==='negative'?'Negative priority':sent==='positive'?'Positive':sent==='neutral'?'Neutral':'All updates'),q,lang});batch=[];};
-  for(const term of terms){const test=anchor+' ('+batch.concat(term).join(' OR ')+')';if(test.length>430&&batch.length)emit();batch.push(term);}
+  for(const term of terms){const test=anchor+' ('+batch.concat(term).join(' OR ')+')';if(encodeURIComponent(test).length>1500&&batch.length)emit();batch.push(term);}
   emit();
  }
  return out;
