@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101d35">
+<title>ShikshaWatch | Central Education Monitor</title>
+<style>
+:root{--navy:#101d35;--blue:#2457d6;--bg:#f3f6fb;--panel:#fff;--text:#172033;--muted:#64748b;--line:#e2e8f0;--red:#b42318;--amber:#925b08;--green:#167447}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:linear-gradient(115deg,#101d35,#1c3766);color:#fff;padding:22px max(18px,calc((100% - 1240px)/2));display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.brand{font-size:25px;font-weight:850;letter-spacing:-.7px}.brand small{display:block;font-size:12px;font-weight:500;letter-spacing:.1px;color:#c7d7ff}
+.header-tag{border:1px solid #60759b;border-radius:30px;padding:7px 11px;color:#e7efff;font-size:12px}
+main{max-width:1240px;margin:20px auto;padding:0 16px}.notice{background:#fff7e6;border:1px solid #f1d08a;color:#754b00;border-radius:12px;padding:12px 14px;margin-bottom:15px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:15px}.stat,.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:0 2px 8px #10213d08}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:22px;margin-top:3px}
+.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:13px}.tab{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 13px;white-space:nowrap;font-weight:700;cursor:pointer}.tab.active{background:var(--blue);border-color:var(--blue);color:white}
+.layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr);gap:13px}.panel h2{font-size:17px;margin:0 0 10px}.panel h3{font-size:14px;margin:15px 0 7px}
+label{font-weight:700;font-size:12px;display:block;margin:10px 0 5px;color:#334155}select,input{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:10px;background:white;color:var(--text);font:inherit}
+.btn{border:1px solid var(--line);border-radius:9px;background:white;padding:9px 12px;font-weight:700;cursor:pointer;color:var(--text)}.btn.primary{background:var(--blue);border-color:var(--blue);color:white}.btn.red{background:#fff1f0;border-color:#f0b7b2;color:#9c2119}.btn:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:var(--muted)}.small{font-size:12px}.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.chip{border:1px solid #dbe4f0;border-radius:20px;padding:5px 9px;background:#f8fafc;color:#34445e;font-size:12px}
+.category-list{display:grid;gap:8px}.category{border:1px solid var(--line);border-radius:11px;padding:11px;background:#fff;cursor:pointer;text-align:left}.category.selected{border-color:#6c8ce8;background:#f1f5ff}.category strong{display:block}.category span{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+.querybox{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:11px;overflow-wrap:anywhere;font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap}
+.linklist{display:grid;gap:8px;margin-top:10px}.linkitem{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px}.linkitem strong{display:block}.linkitem small{color:var(--muted)}
+a{color:var(--blue);font-weight:700;text-decoration:none}a:hover{text-decoration:underline}
+.hidden{display:none!important}.footer{text-align:center;color:var(--muted);font-size:12px;padding:22px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.brand{font-size:22px}.stat strong{font-size:19px}}
+</style>
+</head>
+<body>
+<header><div class="brand">ShikshaWatch <small>Central Education Ministry Monitoring Portal · Google Search Edition</small></div><span class="header-tag">🇮🇳 India focus · Central institutions only</span></header>
+<main>
+<div class="notice"><strong>Monitoring scope:</strong> Ministry of Education, its departments, central examination bodies and centrally funded/established institutions only. State Government education departments, state boards and routine state-level education news are excluded. A central institution located in a state remains in scope.</div>
+<div class="stats">
+<div class="stat"><span>Monitoring categories</span><strong id="catCount">8</strong></div>
+<div class="stat"><span>Search platforms</span><strong>6</strong></div>
+<div class="stat"><span>Priority</span><strong>Negative first</strong></div>
+<div class="stat"><span>Collection mode</span><strong>Manual search</strong></div>
+</div>
+<nav class="tabs">
+<button class="tab active" data-tab="search">Search Dashboard</button>
+<button class="tab" data-tab="keywords">Category Keywords</button>
+<button class="tab" data-tab="guidelines">Relevance Rules</button>
+</nav>
+<section id="view-search">
+<div class="layout">
+<div class="panel">
+<h2>Build Google Search links</h2>
+<p class="muted">Choose a category and platform. The portal creates separate, ready-to-open Google searches. Negative issues are selected by default; positive updates are available separately.</p>
+<div class="grid2">
+<div><label for="category">Monitoring category</label><select id="category"></select></div>
+<div><label for="platform">Platform / source</label><select id="platform"><option value="all">All public web results</option><option value="x">X</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option><option value="youtube">YouTube</option><option value="news">Digital News / Articles</option></select></div>
+</div>
+<div class="grid2">
+<div><label for="sentiment">Issue priority</label><select id="sentiment"><option value="negative">Negative / Issues (High Priority)</option><option value="mixed">Negative + General discussion</option><option value="positive">Positive / Government updates (Low Priority)</option><option value="all">All coverage</option></select></div>
+<div><label for="period">Time period</label><select id="period"><option value="d">Past 24 hours</option><option value="w" selected>Past week</option><option value="m">Past month</option><option value="any">Any time</option></select></div>
+</div>
+<label for="extra">Additional keyword (optional)</label><input id="extra" placeholder="e.g. Delhi University data breach, UGC NET result">
+<div class="actions"><button class="btn primary" id="build">Generate Google searches</button><button class="btn" id="copyQuery">Copy main query</button></div>
+<h3>Main Google query</h3><div class="querybox" id="mainQuery">Select a category and generate searches.</div>
+<div class="linklist" id="results"><div class="muted">Search links will appear here.</div></div>
+</div>
+<aside class="panel">
+<h2>Category quick select</h2><div class="category-list" id="categoryList"></div>
+<h3>Important search note</h3>
+<p class="muted small">Google may ignore parts of long Boolean queries and may not index every social post. Run the category searches regularly and verify each original post/article before reporting.</p>
+<h3>Do not exclude by state name</h3>
+<p class="muted small">IIT, NIT, Central Universities, KVS, NVS or other central bodies can be located in any state. Exclude state-government departments and state boards—not the state name itself.</p>
+</aside>
+</div>
+</section>
+<section id="view-keywords" class="hidden">
+<div class="panel">
+<h2>Category-wise keyword library</h2><p class="muted">These keyword groups are designed for discovery. Combine the institution anchor with the issue terms; avoid using one oversized query for every category.</p>
+<div id="keywordLibrary" class="category-list"></div>
+</div>
+</section>
+<section id="view-guidelines" class="hidden">
+<div class="layout">
+<div class="panel"><h2>Direct relevance — include</h2>
+<ul>
+<li>Union Ministry of Education, DoSEL and Department of Higher Education.</li>
+<li>UGC, AICTE, NTA, NCERT/CIET, CBSE, NIOS, NCTE, KVS and NVS.</li>
+<li>IITs, NITs, IIITs, IISERs, IISc, IIMs and Central Universities.</li>
+<li>Central exams and processes: NEET-UG, JEE, CUET, UGC-NET and central recruitment/admissions when the responsible body is in scope.</li>
+<li>Central policies, schemes, funding, official decisions, Parliament/court matters and ministry-linked student issues.</li>
+</ul></div>
+<div class="panel"><h2>Exclude — out of scope</h2>
+<ul>
+<li>State Education Departments, State Education Ministers and state-government policy announcements.</li>
+<li>State Board exams/results and routine state university/college matters with no central Ministry connection.</li>
+<li>Foreign-country education news and generic global education stories.</li>
+<li>Health-only exams such as NEET-PG, unless a specific central MoE body is materially involved.</li>
+<li>Posts mentioning a minister's name alone without an actual Education Ministry connection.</li>
+</ul></div>
+</div>
+<div class="notice" style="margin-top:13px"><strong>Reporting rule:</strong> Search match is not proof of relevance. Confirm the institution, responsible authority, location/context, date and original source. Mark uncertain items “Review Needed” rather than Direct.</div>
+</section>
+<div class="footer">ShikshaWatch · Search-only discovery tool · No automatic scraping or background collection</div>
+</main>
+<script>
+const categories=[
+{id:"ministry",name:"1. Ministry & Leadership",desc:"MoE, DoSEL, Higher Education and Union-level decisions",anchor:['"Ministry of Education" India','"Department of Higher Education" India','"Department of School Education and Literacy"','"Dharmendra Pradhan" education ministry'],negative:['controversy','criticism','allegation','negligence','failure','parliament question','court order','protest','complaint','irregularity'],positive:['launches','announces','reviews','inaugurates','approves','initiative','achievement']},
+{id:"exams",name:"2. Central Exams — NTA",desc:"NEET-UG, JEE, CUET, UGC-NET, NTA processes",anchor:['NTA India','"National Testing Agency"','NEET-UG','JEE Main','CUET UG','UGC NET'],negative:['paper leak','question paper','exam centre','technical glitch','server issue','result delay','answer key dispute','normalisation','irregularity','fraud','protest','cancellation','re-exam'],positive:['registration','admit card','exam schedule','result declared','notice','official update']},
+{id:"higher",name:"3. Higher Education Regulators",desc:"UGC, AICTE, NCTE and central higher-education policy",anchor:['UGC India','AICTE India','NCTE India','"Higher Education" "Government of India"'],negative:['regulation controversy','fee hike','recognition cancelled','fake university','fraud','corruption','protest','faculty recruitment','irregular appointment','student grievance','harassment','court case'],positive:['guidelines','approval','scholarship','fellowship','accreditation','reform','notification']},
+{id:"school",name:"4. School Education & Boards",desc:"CBSE, NCERT, NIOS, KVS, NVS and DoSEL",anchor:['CBSE India','NCERT India','NIOS India','KVS India','NVS India','"Samagra Shiksha" "Ministry of Education"'],negative:['paper leak','question paper error','result error','exam controversy','syllabus dispute','textbook controversy','teacher protest','student complaint','school negligence','data breach'],positive:['board circular','curriculum','textbook','admission notice','exam date sheet','official notification']},
+{id:"institutions",name:"5. Central Institutions & Campuses",desc:"IIT, NIT, IIIT, IISER, IISc, IIM and Central Universities",anchor:['IIT India','NIT India','IIIT India','IISER India','IISc Bangalore','IIM India','"Central University" India'],negative:['student protest','campus violence','ragging','harassment','discrimination','suicide','fee hike','mess controversy','hostel issue','faculty protest','corruption','caste discrimination','sexual harassment','administrative failure'],positive:['research achievement','convocation','innovation','placement','ranking','admission','scholarship']},
+{id:"student",name:"6. Student Grievances & Protests",desc:"Student movements or complaints directly involving central bodies",anchor:['UGC students India','NTA students India','CBSE students India','IIT students India','"Central University" students India','KVS students India'],negative:['student protest','students protest','student agitation','dharna','demonstration','fee hike','scholarship delay','hostel problem','discrimination','harassment','exam injustice','admission dispute','grievance'],positive:['student award','student achievement','scholarship awarded','student innovation']},
+{id:"integrity",name:"7. Integrity, Security & Legal Issues",desc:"Leaks, scams, cyber incidents, fraud, FIRs and court cases",anchor:['NTA India','UGC India','CBSE India','NCERT India','IIT India','"Ministry of Education" India','"Central University" India'],negative:['paper leak','exam scam','admission scam','recruitment scam','fraud','corruption','FIR','CBI','ED probe','data breach','cyber attack','hacking','forged certificate','fake degree','court order','investigation','irregularity'],positive:['audit report','security upgrade','court relief','investigation completed']},
+{id:"policy",name:"8. Policy, Funding & Implementation",desc:"NEP 2020, central schemes, funding, recruitment and implementation",anchor:['"National Education Policy 2020"','"Ministry of Education" scheme India','"Samagra Shiksha" "Government of India"','PM SHRI schools India','"PM-USHA" education'],negative:['fund shortage','fund release delay','implementation failure','vacant posts','recruitment delay','scheme irregularity','audit objection','parliament criticism','CAG report','protest','non-payment'],positive:['fund allocation','scheme launch','implementation review','new guidelines','approval','progress report']}
+];
+const negativeWords=['protest','controversy','criticism','allegation','irregularity','negligence','failure','paper leak','exam dispute','result error','fraud','corruption','scam','harassment','discrimination','data breach','cyber attack','FIR','court order','investigation','fee hike','scholarship delay','student grievance','administrative failure'];
+const positiveWords=['launches','announces','approves','inaugurates','achievement','initiative','guidelines','scholarship','research achievement','official update'];
+const platforms={all:{label:'Google Web',site:''},x:{label:'X',site:'site:x.com'},instagram:{label:'Instagram',site:'site:instagram.com'},facebook:{label:'Facebook',site:'site:facebook.com'},youtube:{label:'YouTube',site:'site:youtube.com'},news:{label:'Digital News / Articles',site:'(site:indianexpress.com OR site:thehindu.com OR site:hindustantimes.com OR site:ndtv.com OR site:timesofindia.indiatimes.com OR site:news18.com OR site:aninews.in OR site:ptinews.com OR site:pib.gov.in)'}};
+const $=id=>document.getElementById(id);
+function quote(t){return '"'+t.replace(/"/g,'')+'"'}
+function selectedCategory(){return categories.find(c=>c.id===$('category').value)||categories[0]}
+function termsFor(c,mode){if(mode==='negative')return c.negative;if(mode==='positive')return c.positive;if(mode==='mixed')return [...c.negative,...['issue','news','update','students','Ministry of Education']];return [...c.negative,...c.positive]}
+function queryFor(c,platform,mode,extra){
+ const anchors=c.anchor.slice(0,5).map(quote).join(' OR ');
+ const issues=termsFor(c,mode).slice(0,18).map(quote).join(' OR ');
+ let q='('+anchors+') ('+issues+') India';
+ if(platform.site)q=platform.site+' '+q;
+ if(extra)q+=' '+quote(extra);
+ if(mode==='negative')q+=' -jobs -admission advertisement';
+ if(mode==='positive')q+=' -State Education Department -State Board';
+ return q;
+}
+function timeUrl(url){const p=$('period').value;if(p==='any')return url;const q=new URL(url);q.searchParams.set('tbs',p==='d'?'qdr:d':p==='w'?'qdr:w':'qdr:m');return q.toString()}
+function makeLink(label,q){const url=timeUrl('https://www.google.com/search?q='+encodeURIComponent(q));return {label,url,q}}
+function renderLinks(){
+ const c=selectedCategory(),p=platforms[$('platform').value],mode=$('sentiment').value,extra=$('extra').value.trim();
+ const q=queryFor(c,p,mode,extra);$('mainQuery').textContent=q;
+ const links=[];
+ if($('platform').value==='all'){
+  Object.entries(platforms).forEach(([key,pl])=>{if(key==='all')return;links.push(makeLink(pl.label,queryFor(c,pl,mode,extra)))});
+  links.unshift(makeLink('Google Web — all public results',q));
+ }else links.push(makeLink(p.label,q));
+ if($('platform').value!=='news'&&$('platform').value!=='all')links.push(makeLink('Google Web — same category',queryFor(c,platforms.all,mode,extra)));
+ $('results').innerHTML=links.map(x=>'<div class="linkitem"><div><strong>'+x.label+'</strong><small>Opens Google Search in a new tab</small></div><a href="'+x.url+'" target="_blank" rel="noopener">Open search ↗</a></div>').join('');
+}
+function renderCategories(){
+ $('category').innerHTML=categories.map(c=>'<option value="'+c.id+'">'+c.name+'</option>').join('');
+ $('categoryList').innerHTML=categories.map(c=>'<button class="category" data-cat="'+c.id+'"><strong>'+c.name+'</strong><span>'+c.desc+'</span></button>').join('');
+ $('categoryList').querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{$('category').value=b.dataset.cat;document.querySelectorAll('.category').forEach(x=>x.classList.toggle('selected',x===b));renderLinks()}));
+ $('keywordLibrary').innerHTML=categories.map(c=>'<div class="panel"><h3>'+c.name+'</h3><p class="muted small">'+c.desc+'</p><strong>Institution / subject anchors</strong><div class="chips">'+c.anchor.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div><strong style="display:block;margin-top:10px">Negative / issue keywords (priority)</strong><div class="chips">'+c.negative.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div><strong style="display:block;margin-top:10px">Positive / routine updates (lower priority)</strong><div class="chips">'+c.positive.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div></div>').join('');
+ $('catCount').textContent=categories.length;
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['search','keywords','guidelines'].forEach(v=>$('view-'+v).classList.toggle('hidden',v!==b.dataset.tab))}));
+$('build').addEventListener('click',renderLinks);
+$('category').addEventListener('change',renderLinks);$('platform').addEventListener('change',renderLinks);$('sentiment').addEventListener('change',renderLinks);$('period').addEventListener('change',renderLinks);
+$('copyQuery').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('mainQuery').textContent);$('copyQuery').textContent='Copied';setTimeout(()=>$('copyQuery').textContent='Copy main query',1300)}catch{$('copyQuery').textContent='Select and copy query'}});
+renderCategories();$('category').value='exams';renderLinks();
+</script>
+</body>
+</html>
