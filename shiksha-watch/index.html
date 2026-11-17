@@ -51,7 +51,7 @@ a{color:var(--blue);font-weight:700;text-decoration:none}a:hover{text-decoration
 <div><label for="platform">Platform / source</label><select id="platform"><option value="all">All public web results</option><option value="x">X (Direct Search)</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option><option value="youtube">YouTube</option><option value="news">Digital News / Articles</option></select></div>
 </div>
 <div class="grid2">
-<div><label for="sentiment">Issue priority</label><select id="sentiment"><option value="negative">Negative / Issues (High Priority)</option><option value="mixed">Negative + General discussion</option><option value="positive">Positive / Government updates (Low Priority)</option><option value="all">All coverage</option></select></div>
+<div><label for="sentiment">Issue priority</label><select id="sentiment"><option value="negative">Broad + Issue-focused searches</option><option value="mixed">Broad topic searches</option><option value="positive">Positive / Government updates (Low Priority)</option><option value="all">Broad + All issue searches</option></select></div>
 <div><label for="period">Time period</label><select id="period"><option value="d">Past 24 hours</option><option value="w" selected>Past week</option><option value="m">Past month</option><option value="any">Any time</option></select></div>
 </div>
 <label for="extra">Additional keyword (optional)</label><input id="extra" placeholder="e.g. Delhi University data breach, UGC NET result">
@@ -137,12 +137,30 @@ function makeLink(label,q,platformKey='all'){
 }
 function chunks(items,size){const out=[];for(let i=0;i<items.length;i+=size)out.push(items.slice(i,i+size));return out}
 function xQueries(c,mode,extra){
- const anchorGroups=chunks(c.anchor,3), issueGroups=chunks(termsFor(c,mode),4), out=[];
- anchorGroups.forEach((ag,ai)=>{issueGroups.forEach((ig,ii)=>{
-  let q='('+ag.map(quote).join(' OR ')+') ('+ig.map(quote).join(' OR ')+')';
+ const out=[];
+ // Broad discovery: search subject/institution anchors alone, without requiring issue words.
+ chunks(c.anchor,3).forEach((ag,ai)=>{
+  let q='('+ag.map(quote).join(' OR ')+')';
   if(extra)q+=' '+quote(extra);
-  out.push({label:'X Search '+(out.length+1)+' · Topic '+(ai+1)+' / Issue '+(ii+1),q});
- })});
+  out.push({label:'X · Broad topic search '+(ai+1),q});
+ });
+ // Separate issue-focused searches; these are optional and never gate the broad searches.
+ if(mode!=='positive'){
+  chunks(c.negative,4).forEach((ig,ii)=>{
+   const ag=c.anchor.slice(0,3);
+   let q='('+ag.map(quote).join(' OR ')+') ('+ig.map(quote).join(' OR ')+')';
+   if(extra)q+=' '+quote(extra);
+   out.push({label:'X · Issue-focused search '+(ii+1),q});
+  });
+ }
+ if(mode==='positive'||mode==='all'){
+  chunks(c.positive,4).forEach((ig,ii)=>{
+   const ag=c.anchor.slice(0,3);
+   let q='('+ag.map(quote).join(' OR ')+') ('+ig.map(quote).join(' OR ')+')';
+   if(extra)q+=' '+quote(extra);
+   out.push({label:'X · Positive updates '+(ii+1),q});
+  });
+ }
  return out;
 }
 function renderLinks(){
