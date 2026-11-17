@@ -48,7 +48,7 @@ a{color:var(--blue);font-weight:700;text-decoration:none}a:hover{text-decoration
 <p class="muted">Choose a subject category and platform. X searches open directly on x.com. Long keyword lists are split into smaller focused searches so X can process them reliably. Relevant posts by any author can be found; Hindi and English terms are included.</p>
 <div class="grid2">
 <div><label for="category">Monitoring category</label><select id="category"></select></div>
-<div><label for="platform">Platform / source</label><select id="platform"><option value="all">All public web results</option><option value="x">X (Direct Search)</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option><option value="youtube">YouTube</option><option value="news">Digital News / Articles</option></select></div>
+<div><label for="platform">Platform / source</label><select id="platform"><option value="x">X (Direct Search)</option><option value="all">Google Web Search</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option><option value="youtube">YouTube</option><option value="news">Digital News / Articles</option></select></div>
 </div>
 <div class="grid2">
 <div><label for="sentiment">Issue priority</label><select id="sentiment"><option value="negative">Broad + Issue-focused searches</option><option value="mixed">Broad topic searches</option><option value="positive">Positive / Government updates (Low Priority)</option><option value="all">Broad + All issue searches</option></select></div>
@@ -56,7 +56,7 @@ a{color:var(--blue);font-weight:700;text-decoration:none}a:hover{text-decoration
 </div>
 <label for="extra">Additional keyword (optional)</label><input id="extra" placeholder="e.g. Delhi University data breach, UGC NET result">
 <div class="actions"><button class="btn primary" id="build">Generate searches</button><button class="btn" id="copyQuery">Copy main query</button></div>
-<h3>Main Google query</h3><div class="querybox" id="mainQuery">Select a category and generate searches.</div>
+<h3>Main X search queries</h3><div class="querybox" id="mainQuery">Select a category and generate searches.</div>
 <div class="linklist" id="results"><div class="muted">Search links will appear here.</div></div>
 </div>
 <aside class="panel">
@@ -150,24 +150,29 @@ function xAnchorQuery(raw){
 }
 function xQueries(c,mode,extra){
  const out=[];
- // One anchor per query: avoids exact-phrase combinations such as "NTA India" that rarely appear in posts.
+ const anchorGroups=chunks(c.anchor,4);
+ // Issue-first searches: pair central education topics with negative/critical terms.
+ if(mode!=='positive'){
+  const issueGroups=chunks(c.negative,4);
+  anchorGroups.forEach((ag,ai)=>{
+   issueGroups.forEach((ig,ii)=>{
+    const anchors='('+ag.map(xAnchorQuery).join(' OR ')+')';
+    let q=anchors+' ('+ig.map(quote).join(' OR ')+')';
+    if(extra)q+=' '+quote(extra);
+    out.push({label:'X · Priority negative search '+(out.length+1),q});
+   });
+  });
+ }
+ // Broad topic-only searches remain available so posts without explicit negative words are not missed.
  c.anchor.forEach((raw,i)=>{
   let q=xAnchorQuery(raw);
   if(extra)q+=' '+quote(extra);
-  out.push({label:'X · Topic search '+(i+1)+': '+raw.replace(/"/g,''),q});
+  out.push({label:'X · Broad topic search '+(i+1)+': '+raw.replace(/"/g,''),q});
  });
- // Separate issue searches supplement broad discovery; they do not restrict it.
- if(mode!=='positive'){
-  chunks(c.negative,4).forEach((ig,ii)=>{
-   const a=xAnchorQuery(c.anchor[0]);
-   let q=a+' ('+ig.map(quote).join(' OR ')+')';
-   if(extra)q+=' '+quote(extra);
-   out.push({label:'X · Issue-focused search '+(ii+1),q});
-  });
- }
  if(mode==='positive'||mode==='all'){
   chunks(c.positive,4).forEach((ig,ii)=>{
-   let q=xAnchorQuery(c.anchor[0])+' ('+ig.map(quote).join(' OR ')+')';
+   const anchors='('+anchorGroups[0].map(xAnchorQuery).join(' OR ')+')';
+   let q=anchors+' ('+ig.map(quote).join(' OR ')+')';
    if(extra)q+=' '+quote(extra);
    out.push({label:'X · Positive updates '+(ii+1),q});
   });
@@ -202,7 +207,7 @@ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{doc
 $('build').addEventListener('click',renderLinks);
 $('category').addEventListener('change',renderLinks);$('platform').addEventListener('change',renderLinks);$('sentiment').addEventListener('change',renderLinks);$('period').addEventListener('change',renderLinks);
 $('copyQuery').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('mainQuery').textContent);$('copyQuery').textContent='Copied';setTimeout(()=>$('copyQuery').textContent='Copy main query',1300)}catch{$('copyQuery').textContent='Select and copy query'}});
-renderCategories();$('category').value='exams';renderLinks();
+renderCategories();$('category').value='discourse';$('platform').value='x';$('sentiment').value='negative';renderLinks();
 </script>
 </body>
 </html>
