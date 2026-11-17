@@ -141,10 +141,20 @@ function xAnchorQuery(raw){
  return '"'+t+'"';
 }
 function xQueries(c,mode,extra){
- const anchors='('+c.anchor.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
- const issues='('+c.negative.map(x=>'"'+x+'"').join(' OR ')+')';
- let q=anchors+' '+issues+' -jobs -vacancy -admission';
+ // Keep the Boolean query compact so X accepts it reliably.
+ const anchorLimit=c.id==='institutions'?10:8;
+ const issueLimit=c.id==='institutions'?12:12;
+ const anchors='('+c.anchor.slice(0,anchorLimit).map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
+ const issueTerms=c.negative.slice(0,issueLimit);
+ const issues='('+issueTerms.map(x=>'"'+x+'"').join(' OR ')+')';
+ let q=anchors+' '+issues+' -jobs -admission';
  if(extra)q+=' "'+extra.replace(/"/g,'')+'"';
+ // Avoid X's query-length rejection; retain the topic anchors and trim only trailing issue terms.
+ while(q.length>480 && issueTerms.length>6){
+  issueTerms.pop();
+  q=anchors+' ('+issueTerms.map(x=>'"'+x+'"').join(' OR ')+') -jobs -admission';
+  if(extra)q+=' "'+extra.replace(/"/g,'')+'"';
+ }
  return [{label:'X · Negative / Critical Monitoring',q}];
 }
 function renderLinks(){
