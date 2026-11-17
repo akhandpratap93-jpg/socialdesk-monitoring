@@ -150,7 +150,7 @@ function renderLinks(){
  const links=[];
  if(key==='x'){
   const qs=xQueries(c,mode,extra);
-  $('mainQuery').textContent=qs.map(x=>x.q).join('\\n\\n');
+  $('mainQuery').textContent=qs.map(x=>x.q).join('\n\n');
   qs.forEach(x=>links.push(makeLink(x.label,x.q,'x')));
  }else{
   const q=queryFor(c,p,mode,extra);$('mainQuery').textContent=q;
