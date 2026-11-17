@@ -51,7 +51,7 @@ a{color:var(--blue);font-weight:700;text-decoration:none}a:hover{text-decoration
 <div><label for="platform">Platform / source</label><select id="platform"><option value="x">X (Direct Search)</option><option value="all">Google Web Search</option><option value="instagram">Instagram</option><option value="facebook">Facebook</option><option value="youtube">YouTube</option><option value="news">Digital News / Articles</option></select></div>
 </div>
 <div class="grid2">
-<div><label for="sentiment">Issue priority</label><select id="sentiment"><option value="negative">Broad + Issue-focused searches</option><option value="mixed">Broad topic searches</option><option value="positive">Positive / Government updates (Low Priority)</option><option value="all">Broad + All issue searches</option></select></div>
+<div><label for="sentiment">News filter</label><select id="sentiment"><option value="negative" selected>Negative news only</option></select></div>
 <div><label for="period">Time period</label><select id="period"><option value="d">Past 24 hours</option><option value="w" selected>Past week</option><option value="m">Past month</option><option value="any">Any time</option></select></div>
 </div>
 <label for="extra">Additional keyword (optional)</label><input id="extra" placeholder="e.g. Delhi University data breach, UGC NET result">
@@ -114,12 +114,11 @@ function selectedCategory(){return categories.find(c=>c.id===$('category').value
 function termsFor(c,mode){if(mode==='negative')return c.negative;if(mode==='positive')return c.positive;if(mode==='mixed')return [...c.negative,...['issue','news','update','students']];return [...c.negative,...c.positive]}
 function queryFor(c,platform,mode,extra){
  const anchors=c.anchor.slice(0,9).map(quote).join(' OR ');
- const issues=termsFor(c,mode).slice(0,14).map(quote).join(' OR ');
+ const issues=c.negative.map(quote).join(' OR ');
  let q='('+anchors+') ('+issues+') India';
  if(platform.site)q=platform.site+' '+q;
  if(extra)q+=' '+quote(extra);
- if(mode==='negative')q+=' -jobs -admission advertisement';
- if(mode==='positive')q+=' -State Education Department -State Board';
+ q+=' -jobs -admission -advertisement -vacancy-notification -result-declaration';
  return q;
 }
 function timeUrl(url){const p=$('period').value;if(p==='any')return url;const q=new URL(url);q.searchParams.set('tbs',p==='d'?'qdr:d':p==='w'?'qdr:w':'qdr:m');return q.toString()}
