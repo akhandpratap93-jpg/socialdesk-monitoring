@@ -143,81 +143,62 @@ function xAnchorQuery(raw){
  return '"'+t+'"';
 }
 function xQueries(c,mode,extra){
- // PM POSHAN needs broad discovery as well as issue-focused matching:
- // many relevant posts use hashtags or describe a development without a standard negative keyword.
- if(c.id==='schemes'){
-  const topic='(#PMPOSHAN OR #PMPoshan OR #MidDayMeal OR #MidDayMeals OR "PM POSHAN" OR "mid day meal" OR "mid-day meal" OR "midday meal" OR "ಮಧ್ಯಾಹ್ನದ ಊಟ" OR "ಮಧ್ಯಾಹ್ನದ ಬಿಸಿಯೂಟ" OR "ಮಿಡ್ಡೇ ಮೀಲ್ಸ್" OR "मिड डे मील" OR "मध्याह्न भोजन")';
-  const issueTerms=['"food poisoning"','"rotten food"','worms','insects','"meal not served"','"food quality"','corruption','"fund delay"','"payment delay"','"cooks protest"','"caste discrimination"','"ಊಟದಲ್ಲಿ ವಿಷ"','"ಕೆಟ್ಟ ಆಹಾರ"','"ಆಹಾರದಲ್ಲಿ ಹುಳುಗಳು"','"ಊಟ ನೀಡಿಲ್ಲ"','"ಹಣ ದುರುಪಯೋಗ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿ ಪ್ರತಿಭಟನೆ"','"खाने में कीड़े"','"खराब भोजन"','"भोजन नहीं मिला"','"भोजन में गड़बड़ी"','"भुगतान में देरी"','"फंड में देरी"','"खाद्य विषाक्तता"','"जातिगत भेदभाव"'];
-  let issueQuery=topic+' ('+issueTerms.join(' OR ')+')';
-  while(issueQuery.length>250 && issueTerms.length>5){issueTerms.pop();issueQuery=topic+' ('+issueTerms.join(' OR ')+')';}
-  if(extra && issueQuery.length+extra.length+3<=400){issueQuery+=' "'+extra.replace(/"/g,'')+'"';}
-  const schemeResults=[
-   {label:'X · PM POSHAN / Mid-Day Meal — all topic mentions',q:topic},
-   {label:'X · PM POSHAN / Mid-Day Meal — negative issues',q:issueQuery}
-  ];
-  if(extra && issueQuery.length+extra.length+3>400){
-   const extraQuery=topic+' "'+extra.replace(/"/g,'')+'"';
-   if(extraQuery.length<=400)schemeResults.push({label:'X · PM POSHAN / Mid-Day Meal — additional keyword',q:extraQuery});
+ // All category searches are negative-only. Group several issue phrases in each
+ // search link instead of creating one link/category per keyword.
+ const langOf=s=>/[\\u0C80-\\u0CFF]/.test(s)?'kn':/[\\u0900-\\u097F]/.test(s)?'hi':'en';
+ const negativeOnly={
+  ministry:{
+   en:['"education system failure"','"higher education crisis"','"policy failure"','"policy controversy"','"ministry negligence"','"funding crisis"','"budget cut"','"teacher shortage"','"education inequality"','"implementation failure"','"university protest"','"student protest"','"institutional negligence"','"scholarship delay"','"recruitment irregularities"','"fund misuse"','"audit irregularities"','"paper leak"','corruption','scam','"fee hike"','"infrastructure shortage"','"poor learning outcomes"'],
+   hi:['"शिक्षा व्यवस्था की विफलता"','"उच्च शिक्षा संकट"','"शिक्षा नीति पर सवाल"','"मंत्रालय की लापरवाही"','"बजट में कटौती"','"फंड की कमी"','"शिक्षकों की कमी"','"शिक्षक भर्ती में अनियमितता"','"छात्रों का विरोध"','"विश्वविद्यालय में प्रदर्शन"','"संस्थागत लापरवाही"','"छात्रवृत्ति में देरी"','"पेपर लीक"','"भ्रष्टाचार"','"घोटाला"','"शुल्क वृद्धि"','"बुनियादी सुविधाओं की कमी"','"शिक्षा में असमानता"','"परीक्षा में गड़बड़ी"'],
+   kn:['"ಶಿಕ್ಷಣ ವ್ಯವಸ್ಥೆ ವೈಫಲ್ಯ"','"ಉನ್ನತ ಶಿಕ್ಷಣ ಬಿಕ್ಕಟ್ಟು"','"ನೀತಿ ವೈಫಲ್ಯ"','"ಶಿಕ್ಷಣ ಸಚಿವಾಲಯದ ನಿರ್ಲಕ್ಷ್ಯ"','"ಬಜೆಟ್ ಕಡಿತ"','"ಹಣಕಾಸಿನ ಕೊರತೆ"','"ಶಿಕ್ಷಕರ ಕೊರತೆ"','"ಶಿಕ್ಷಕರ ನೇಮಕಾತಿ ಅಕ್ರಮ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಪ್ರತಿಭಟನೆ"','"ವಿಶ್ವವಿದ್ಯಾಲಯ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿದ್ಯಾರ್ಥಿವೇತನ ವಿಳಂಬ"','"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಹಗರಣ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ"','"ಮೂಲಸೌಕರ್ಯ ಕೊರತೆ"','"ಶಿಕ್ಷಣ ಅಸಮಾನತೆ"','"ಪರೀಕ್ಷಾ ಅಕ್ರಮ"']
+  },
+  exams:{
+   en:['"paper leak"','"question paper leak"','"exam scam"','"NTA failure"','"exam irregularity"','"exam cancellation"','"result manipulation"','"answer key error"','"technical glitch"','"re-examination"','"exam mismanagement"','"cheating racket"'],
+   hi:['"पेपर लीक"','"परीक्षा में धांधली"','"परीक्षा रद्द"','"परीक्षा में गड़बड़ी"','"परिणाम में गड़बड़ी"','"आंसर की में गलती"','"परीक्षा कुप्रबंधन"','"नकल गिरोह"','"एनटीए की विफलता"'],
+   kn:['"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಪರೀಕ್ಷಾ ಅಕ್ರಮ"','"ಪರೀಕ್ಷೆ ರದ್ದು"','"ಫಲಿತಾಂಶದಲ್ಲಿ ತಪ್ಪು"','"ಪರೀಕ್ಷಾ ಗೊಂದಲ"','"ಉತ್ತರ ಕೀ ದೋಷ"','"ಪರೀಕ್ಷಾ ಅವ್ಯವಸ್ಥೆ"','"ನಕಲು ಜಾಲ"']
+  },
+  institutions:{
+   en:['"student death"','"student suicide"','"campus death"','"caste discrimination"','"caste bias"','"institutional negligence"','"student protest"','"fee hike"','ragging','harassment','"campus violence"','"hostel food poisoning"','"faculty vacancy"'],
+   hi:['"छात्र की मौत"','"छात्र आत्महत्या"','"जातिगत भेदभाव"','"संस्थान की लापरवाही"','"छात्रों का प्रदर्शन"','"फीस में बढ़ोतरी"','रैगिंग','उत्पीड़न','"कैंपस हिंसा"','"छात्रावास में दूषित भोजन"'],
+   kn:['"ವಿದ್ಯಾರ್ಥಿ ಸಾವು"','"ವಿದ್ಯಾರ್ಥಿ ಆತ್ಮಹತ್ಯೆ"','"ಜಾತಿ ತಾರತಮ್ಯ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿದ್ಯಾರ್ಥಿಗಳ ಪ್ರತಿಭಟನೆ"','"ಶುಲ್ಕ ಹೆಚ್ಚಳ"','ರ್ಯಾಗಿಂಗ್','ಕಿರುಕುಳ','"ಕ್ಯಾಂಪಸ್ ಹಿಂಸೆ"','"ಹಾಸ್ಟೆಲ್ ಆಹಾರ ವಿಷ"']
+  },
+  schemes:{
+   en:['"food poisoning"','"rotten food"','"contaminated food"','worms','insects','"poor food quality"','"meal not served"','"meal irregularities"','"mid day meal corruption"','"fund misuse"','"fund delay"','"payment delay"','"cooks protest"','"cooks unpaid"','"caste discrimination"','"scheme implementation failure"'],
+   hi:['"खाने में कीड़े"','"खराब भोजन"','"भोजन नहीं मिला"','"दूषित भोजन"','"भोजन में अनियमितता"','"मध्याह्न भोजन में भ्रष्टाचार"','"भुगतान में देरी"','"फंड में देरी"','"रसोइयों का प्रदर्शन"','"रसोइयों को वेतन नहीं"','"जातिगत भेदभाव"','"योजना लागू करने में विफलता"'],
+   kn:['"ಊಟದಲ್ಲಿ ವಿಷ"','"ಕೆಟ್ಟ ಆಹಾರ"','"ಆಹಾರದಲ್ಲಿ ಹುಳುಗಳು"','"ಊಟ ನೀಡಿಲ್ಲ"','"ಮಧ್ಯಾಹ್ನದ ಊಟದಲ್ಲಿ ಅಕ್ರಮ"','"ಹಣ ದುರುಪಯೋಗ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿ ಪ್ರತಿಭಟನೆ"','"ಅಡುಗೆ ಸಿಬ್ಬಂದಿಗೆ ವೇತನವಿಲ್ಲ"','"ಜಾತಿ ತಾರತಮ್ಯ"','"ಯೋಜನೆ ಅನುಷ್ಠಾನ ವೈಫಲ್ಯ"']
+  },
+  reports:{
+   en:['"poor learning outcomes"','"learning crisis"','"low enrolment"','"high dropout rate"','"teacher vacancy"','"school infrastructure shortage"','"education quality crisis"','"funding gap"','"audit objection"','"CAG irregularities"','"report exposes failure"','"parliamentary panel criticism"'],
+   hi:['"सीखने के स्तर में गिरावट"','"शिक्षा संकट"','"कम नामांकन"','"स्कूल छोड़ने की दर में वृद्धि"','"शिक्षकों के पद खाली"','"स्कूलों में बुनियादी सुविधाओं की कमी"','"शिक्षा की गुणवत्ता पर सवाल"','"फंड की कमी"','"ऑडिट में अनियमितता"','"कैग की आपत्तियां"','"रिपोर्ट में विफलता का खुलासा"'],
+   kn:['"ಕಲಿಕೆಯ ಫಲಿತಾಂಶ ಕುಸಿತ"','"ಕಲಿಕಾ ಬಿಕ್ಕಟ್ಟು"','"ಕಡಿಮೆ ದಾಖಲಾತಿ"','"ಶಾಲೆ ಬಿಡುವವರ ಪ್ರಮಾಣ ಹೆಚ್ಚಳ"','"ಶಿಕ್ಷಕರ ಹುದ್ದೆ ಖಾಲಿ"','"ಶಾಲಾ ಮೂಲಸೌಕರ್ಯ ಕೊರತೆ"','"ಶಿಕ್ಷಣ ಗುಣಮಟ್ಟದ ಬಿಕ್ಕಟ್ಟು"','"ಹಣಕಾಸಿನ ಕೊರತೆ"','"ಲೆಕ್ಕಪರಿಶೋಧನೆ ಆಕ್ಷೇಪ"','"ವರದಿಯಲ್ಲಿ ವೈಫಲ್ಯ ಬಹಿರಂಗ"']
   }
-  return schemeResults;
+ };
+ const anchors={
+  ministry:{
+   en:'("Ministry of Education" OR "Education Ministry" OR "Higher Education" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE)',
+   hi:'("शिक्षा मंत्रालय" OR "उच्च शिक्षा" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS)',
+   kn:'("ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ" OR "ಉನ್ನತ ಶಿಕ್ಷಣ" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS)'
+  },
+  exams:{en:'(NTA OR NEET OR JEE OR CUET OR "UGC NET" OR CBSE)',hi:'(NTA OR NEET OR JEE OR CUET OR "UGC NET" OR CBSE)',kn:'(NTA OR NEET OR JEE OR CUET OR "UGC NET" OR CBSE)'},
+  institutions:{en:'(IIT OR NIT OR IIIT OR IISER OR IISc OR IIM OR UGC OR AICTE OR "Central University")',hi:'(IIT OR NIT OR IIIT OR IISER OR IISc OR IIM OR UGC OR AICTE OR "केंद्रीय विश्वविद्यालय")',kn:'(IIT OR NIT OR IIIT OR IISER OR IISc OR IIM OR UGC OR AICTE OR "ಕೇಂದ್ರ ವಿಶ್ವವಿದ್ಯಾಲಯ")'},
+  schemes:{en:'(#PMPOSHAN OR #MidDayMeal OR "PM POSHAN" OR "Mid-Day Meal" OR "Mid Day Meal")',hi:'(#PMPOSHAN OR #MidDayMeal OR "पीएम पोषण" OR "मिड डे मील" OR "मध्याह्न भोजन")',kn:'(#PMPOSHAN OR #MidDayMeal OR "ಪಿಎಂ ಪೋಷಣ್" OR "ಮಧ್ಯಾಹ್ನದ ಊಟ" OR "ಮಧ್ಯಾಹ್ನದ ಬಿಸಿಯೂಟ")'},
+  reports:{en:'(ASER OR AISHE OR UDISE OR NAS OR PARAKH OR CAG OR "education report")',hi:'(ASER OR AISHE OR UDISE OR NAS OR PARAKH OR CAG OR "शिक्षा रिपोर्ट")',kn:'(ASER OR AISHE OR UDISE OR NAS OR PARAKH OR CAG OR "ಶಿಕ್ಷಣ ವರದಿ")'}
+ };
+ const key=negativeOnly[c.id]?c.id:'ministry';
+ const out=[];
+ for(const lang of ['en','hi','kn']){
+  const terms=negativeOnly[key][lang]||[];
+  let group=[];
+  const emit=()=>{if(!group.length)return;let q=anchors[key][lang]+' ('+group.join(' OR ')+')';if(extra)q+=' "'+extra.replace(/"/g,'')+'"';out.push({label:'X · '+c.name+' · '+({en:'English negative issues',hi:'हिंदी नकारात्मक मुद्दे',kn:'ಕನ್ನಡ ನಕಾರಾತ್ಮಕ ಸಮಸ್ಯೆಗಳು'}[lang]),q});group=[];};
+  for(const term of terms){
+   const candidate=group.concat(term);
+   const q=anchors[key][lang]+' ('+candidate.join(' OR ')+')';
+   if(q.length>245 && group.length)emit();
+   group.push(term);
+  }
+  emit();
  }
- // Ministry category: keep education monitoring separate, and add negative-only
- // searches for the Minister across his other public portfolios and controversies.
- if(c.id==='ministry'){
-  const names='("Pralhad Joshi" OR "Prahlad Joshi" OR "प्रल्हाद जोशी" OR "प्रहलाद जोशी" OR "ಪ್ರಲ್ಹಾದ್ ಜೋಶಿ" OR "ಪ್ರಹ್ಲಾದ್ ಜೋಶಿ" OR "ಪ್ರಲ್ಹಾದ ಜೋಶಿ")';
-  const educationAnchors='("Ministry of Education" OR "Education Ministry" OR "Higher Education" OR "Department of School Education" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS OR "शिक्षा मंत्रालय" OR "ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ")';
-  const en=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','fraud','corruption','misconduct','irregularity','"public outrage"','"demand for resignation"','accountability','"under scrutiny"','"failed to respond"','"unfulfilled promises"','"project delay"','"subsidy pending"','"consumer complaint"','"ration irregularities"','"price rise"','"unfair trade practice"','"food shortage"','"paper leak"','"exam cancellation"','"institutional negligence"','"scholarship delay"','"data breach"','"court order"','investigation'];
-  const hi=['"आलोचना"','"विवाद"','"आरोप"','"विरोध"','"प्रदर्शन"','"लापरवाही"','"विफलता"','"घोटाला"','"धोखाधड़ी"','"भ्रष्टाचार"','"अनियमितता"','"जनता में आक्रोश"','"इस्तीफे की मांग"','"जवाबदेही"','"सवालों के घेरे में"','"जवाब देने से बच"','"वादे अधूरे"','"परियोजना में देरी"','"सब्सिडी लंबित"','"उपभोक्ता शिकायत"','"राशन अनियमितता"','"महंगाई"','"खाद्य कमी"','"पेपर लीक"','"परीक्षा रद्द"','"छात्र प्रदर्शन"','"संस्थागत लापरवाही"','"छात्रवृत्ति में देरी"','"डेटा लीक"','"जांच"'];
-  const kn=['"ವಿಮರ್ಶೆ"','"ವಿವಾದ"','"ಆರೋಪ"','"ಪ್ರತಿಭಟನೆ"','"ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿಫಲತೆ"','"ಹಗರಣ"','"ವಂಚನೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಅಕ್ರಮ"','"ಜನರ ಆಕ್ರೋಶ"','"ರಾಜೀನಾಮೆಗೆ ಆಗ್ರಹ"','"ಹೊಣೆಗಾರಿಕೆ"','"ಪ್ರಶ್ನೆಗಳ ಸುಳಿಯಲ್ಲಿ"','"ಉತ್ತರ ನೀಡಿಲ್ಲ"','"ಭರವಸೆ ಈಡೇರಿಲ್ಲ"','"ಯೋಜನೆ ವಿಳಂಬ"','"ಸಹಾಯಧನ ಬಾಕಿ"','"ಗ್ರಾಹಕರ ದೂರು"','"ಪಡಿತರ ಅಕ್ರಮ"','"ಬೆಲೆ ಏರಿಕೆ"','"ಆಹಾರ ಕೊರತೆ"','"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಪರೀಕ್ಷೆ ರದ್ದು"','"ವಿದ್ಯಾರ್ಥಿ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿದ್ಯಾರ್ಥಿವೇತನ ವಿಳಂಬ"','"ಡೇಟಾ ಸೋರಿಕೆ"','"ತನಿಖೆ"'];
-  const consumer=['"consumer affairs"','"consumer protection"','"consumer rights"','"food and public distribution"','PDS','ration','"food inflation"','"consumer complaint"','"unfair trade practice"','"ration irregularities"','"food shortage"','"price rise"','"उपभोक्ता मामले"','"उपभोक्ता अधिकार"','"सार्वजनिक वितरण प्रणाली"','राशन','"महंगाई"','"राशन अनियमितता"','"ग्राहक ವ್ಯವಹಾರ"','"ಗ್ರಾಹಕರ ಹಕ್ಕು"','"ಸಾರ್ವಜನಿಕ ವಿತರಣೆ"','"ಪಡಿತರ"','"ಬೆಲೆ ಏರಿಕೆ"','"ಪಡಿತರ ಅಕ್ರಮ"'];
-  const energy=['"renewable energy"','"new and renewable energy"','MNRE','"solar energy"','"solar power"','"PM Surya Ghar"','"solar project delay"','"subsidy pending"','"vendor fraud"','"power curtailment"','"transmission bottleneck"','"project cancellation"','"नवीकरणीय ऊर्जा"','"सौर ऊर्जा"','"सौर बिजली"','"सौर योजना"','"परियोजना में देरी"','"सब्सिडी लंबित"','"बिजली कटौती"','"ट्रांसमिशन बाधा"','"ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ"','"ಸೌರಶಕ್ತಿ"','"ಸೌರ ವಿದ್ಯುತ್"','"ಸೌರ ಯೋಜನೆ"','"ಯೋಜನೆ ವಿಳಂಬ"','"ಸಹಾಯಧನ ಬಾಕಿ"','"ವಿದ್ಯುತ್ ಕಡಿತ"','"ಪ್ರಸರಣ ಅಡಚಣೆ"'];
-  const caseTerms=['"Bilkis Bano"','"ಬಿಲ್ಕಿಸ್ ಬಾನು"','"ಬಿಲ್ಕಿಸ್ ಬಾನು ಪ್ರಕರಣ"','"बिलकिस बानो"','"बिल्किस बानो"','"बिलकिस बानो मामला"'];
-  const pack=(label,base,terms)=>{
-   const out=[];let group=[];
-   for(const term of terms){
-    const candidate=group.concat(term);
-    const q=base+' ('+candidate.join(' OR ')+')';
-    if(q.length>250 && group.length){out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});group=[term];}
-    else group=candidate;
-   }
-   if(group.length)out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});
-   return out;
-  };
-  let educationTerms=termsFor(c,mode).map(x=>x.startsWith('"')?x:'"'+x+'"');
-  const educationQuery='('+educationAnchors.slice(1,-1)+') ('+educationTerms.join(' OR ')+')';
-  const results=[];
-  // Run each education issue term independently; X does not require a Ministry/acronym match in the same post.
-  educationTerms.forEach(term=>results.push({label:'X · Ministry of Education — '+(/[\\u0C80-\\u0CFF]/.test(term)?'ಕನ್ನಡ':/[\\u0900-\\u097F]/.test(term)?'हिंदी':'English')+' · '+term.replace(/"/g,''),q:term+(extra?' "'+extra.replace(/"/g,'')+'"':'')}));
-  results.push({label:'X · Central Ministry of Education — English broad search',q:educationAnchors});
-  results.push({label:'X · केंद्रीय शिक्षा मंत्रालय — हिंदी broad search',q:'("शिक्षा मंत्रालय" OR "केंद्रीय शिक्षा मंत्रालय" OR "उच्च शिक्षा" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS)'});
-  results.push({label:'X · ಕೇಂದ್ರ ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ — ಕನ್ನಡ broad search',q:'("ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ" OR "ಉನ್ನತ ಶಿಕ್ಷಣ" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS)'});
-  results.push(...pack('X · Pralhad Joshi — English negative / issue words',names,en));
-  results.push(...pack('X · Pralhad Joshi — हिंदी नकारात्मक / मुद्दे',names,hi));
-  results.push(...pack('X · Pralhad Joshi — ಕನ್ನಡ ನಕಾರಾತ್ಮಕ / ಸಮಸ್ಯೆಗಳು',names,kn));
-  // Separate issue-discovery searches: name + issue vocabulary, without requiring
-  // a sentiment label. These catch reports phrased as questions, delays or complaints.
-  const discoverEn=['question','questions','query','reply','response','complaint','problem','issue','demand','review','inquiry','probe','investigation','delay','pending','shortage','dispute','notice','court','hearing','decision','implementation'];
-  const discoverHi=['सवाल','प्रश्न','जवाब','जवाब मांगा','शिकायत','समस्या','मुद्दा','मांग','जांच','पड़ताल','देरी','लंबित','कमी','विवाद','नोटिस','अदालत','सुनवाई','फैसला','क्रियान्वयन'];
-  const discoverKn=['ಪ್ರಶ್ನೆ','ಪ್ರಶ್ನೆಗಳು','ಉತ್ತರ','ಪ್ರತಿಕ್ರಿಯೆ','ದೂರು','ಸಮಸ್ಯೆ','ವಿಷಯ','ಬೇಡಿಕೆ','ತನಿಖೆ','ವಿಚಾರಣೆ','ವಿಳಂಬ','ಬಾಕಿ','ಕೊರತೆ','ವಿವಾದ','ನೋಟಿಸ್','ನ್ಯಾಯಾಲಯ','ನಿರ್ಧಾರ','ಅನುಷ್ಠಾನ'];
-  results.push(...pack('X · Pralhad Joshi — English issue discovery (not sentiment-dependent)',names,discoverEn));
-  results.push(...pack('X · Pralhad Joshi — हिंदी मुद्दों की खोज (नकारात्मक शब्द जरूरी नहीं)',names,discoverHi));
-  results.push(...pack('X · Pralhad Joshi — ಕನ್ನಡ ವಿಷಯಗಳ ಹುಡುಕಾಟ (ನಕಾರಾತ್ಮಕ ಪದ ಕಡ್ಡಾಯವಲ್ಲ)',names,discoverKn));
-  // Portfolio queries require only the name plus relevant portfolio/problem vocabulary.
-  // They do NOT require a third mandatory sentiment group, so issue reports are less likely to be missed.
-  results.push(...pack('X · Pralhad Joshi — Consumer Affairs / PDS issue discovery',names,consumer));
-  results.push(...pack('X · Pralhad Joshi — Renewable Energy / MNRE issue discovery',names,energy));
-  results.push(...pack('X · Bilkis Bano case — minister name references',names,caseTerms));
-  if(extra)results.forEach(x=>{if(x.q.length+extra.length+3<=250)x.q+=' "'+extra.replace(/"/g,'')+'"'});
-  return results;
- }
- // Other categories retain one compact issue-focused query.
- const anchors='('+c.anchor.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
- let issueTerms=termsFor(c,mode).slice();
- const make=()=>anchors+' ('+issueTerms.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')'+(extra?' "'+extra.replace(/"/g,'')+'"':'');
- let q=make();
- while(q.length>250 && issueTerms.length>5){issueTerms.pop();q=make();}
- if(q.length>250){while(q.length>250 && issueTerms.length>2){issueTerms.pop();q=make();}}
- return [{label:'X · Category issue monitoring',q}];
+ return out;
 }
 function renderLinks(){
  const c=selectedCategory(),key=$('platform').value,p=platforms[key],mode=$('sentiment').value,extra=$('extra').value.trim();
