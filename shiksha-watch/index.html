@@ -156,6 +156,35 @@ function xQueries(c,mode,extra){
    {label:'X · PM POSHAN / Mid-Day Meal — negative issues',q:issueQuery}
   ];
  }
+ // Ministry category: keep education monitoring separate, and add negative-only
+ // searches for the Minister across his other public portfolios and controversies.
+ if(c.id==='ministry'){
+  const anchors='('+c.anchor.filter(x=>!(/Pralhad Joshi|Dharmendra Pradhan/i.test(x))).map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
+  let educationTerms=termsFor(c,mode).slice();
+  const educationQuery=()=>anchors+' ('+educationTerms.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
+  let eq=educationQuery();
+  while(eq.length>470 && educationTerms.length>4){educationTerms.pop();eq=educationQuery();}
+  const names='("Pralhad Joshi" OR "Prahlad Joshi" OR "प्रल्हाद जोशी" OR "प्रहलाद जोशी")';
+  const generalTerms=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','corruption','accountability','resignation','"minister silent"','"misleading statement"','"public anger"'];
+  const consumerTerms=['"consumer affairs"','"consumer protection"','"consumer rights"','"food and public distribution"','PDS','ration','"food inflation"'];
+  const energyTerms=['"renewable energy"','"new and renewable energy"','MNRE','"solar energy"','"solar power"','"PM Surya Ghar"'];
+  const caseTerms=['"Bilkis Bano"','controversy','criticism','allegation','statement','response'];
+  const compact=(terms)=>{let a=terms.slice();let q=names+' ('+a.join(' OR ')+')';while(q.length>470&&a.length>2){a.pop();q=names+' ('+a.join(' OR ')+')';}return q;};
+  const portfolio=(terms)=>{let a=terms.slice();let q=names+' ('+a.join(' OR ')+') (criticism OR controversy OR allegation OR failure OR protest OR negligence OR corruption)';while(q.length>470&&a.length>2){a.pop();q=names+' ('+a.join(' OR ')+') (criticism OR controversy OR allegation OR failure OR protest OR negligence OR corruption)';}return q;};
+  const allIssue=compact(generalTerms);
+  const consumer=portfolio(consumerTerms);
+  const energy=portfolio(energyTerms);
+  const bilkis=compact(caseTerms);
+  const results=[
+   {label:'X · Ministry of Education — negative / issue monitoring',q:eq},
+   {label:'X · Pralhad Joshi — negative news across portfolios',q:allIssue},
+   {label:'X · Pralhad Joshi — Consumer Affairs / PDS issues',q:consumer},
+   {label:'X · Pralhad Joshi — Renewable Energy / MNRE issues',q:energy},
+   {label:'X · Pralhad Joshi — Bilkis Bano case references',q:bilkis}
+  ];
+  if(extra)results.forEach(x=>{if(x.q.length+extra.length+3<=470)x.q+=' "'+extra.replace(/"/g,'')+'"'});
+  return results;
+ }
  // Other categories retain one compact issue-focused query.
  const anchors='('+c.anchor.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
  let issueTerms=termsFor(c,mode).slice();
