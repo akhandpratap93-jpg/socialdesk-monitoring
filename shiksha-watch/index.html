@@ -136,27 +136,38 @@ function makeLink(label,q,platformKey='all'){
  return {label,url,q};
 }
 function chunks(items,size){const out=[];for(let i=0;i<items.length;i+=size)out.push(items.slice(i,i+size));return out}
+function xAnchorQuery(raw){
+ let t=raw.replace(/"/g,'').trim();
+ t=t.replace(/\\s+India$/i,'').trim();
+ const person=t.match(/^(Dharmendra Pradhan|Pralhad Joshi|Prahlad Joshi)\\s+education$/i);
+ if(person)return '"'+person[1]+'" education';
+ const hindiPerson=t.match(/^(प्रहलाद जोशी|प्रल्हाद जोशी)\\s+शिक्षा$/);
+ if(hindiPerson)return '"'+hindiPerson[1]+'" शिक्षा';
+ if(/^Ministry of Education$/i.test(t))return '"Ministry of Education"';
+ if(/^Education Ministry$/i.test(t))return '"Education Ministry"';
+ if(/^(NTA|UGC|AICTE|NCTE|CBSE|NCERT|NIOS|KVS|NVS|IIT|NIT|IIIT|IISER|IISc|IIM|NEET-UG|JEE Main|CUET UG|UGC NET)$/i.test(t))return t;
+ return '"'+t+'"';
+}
 function xQueries(c,mode,extra){
  const out=[];
- // Broad discovery: search subject/institution anchors alone, without requiring issue words.
- chunks(c.anchor,3).forEach((ag,ai)=>{
-  let q='('+ag.map(quote).join(' OR ')+')';
+ // One anchor per query: avoids exact-phrase combinations such as "NTA India" that rarely appear in posts.
+ c.anchor.forEach((raw,i)=>{
+  let q=xAnchorQuery(raw);
   if(extra)q+=' '+quote(extra);
-  out.push({label:'X · Broad topic search '+(ai+1),q});
+  out.push({label:'X · Topic search '+(i+1)+': '+raw.replace(/"/g,''),q});
  });
- // Separate issue-focused searches; these are optional and never gate the broad searches.
+ // Separate issue searches supplement broad discovery; they do not restrict it.
  if(mode!=='positive'){
   chunks(c.negative,4).forEach((ig,ii)=>{
-   const ag=c.anchor.slice(0,3);
-   let q='('+ag.map(quote).join(' OR ')+') ('+ig.map(quote).join(' OR ')+')';
+   const a=xAnchorQuery(c.anchor[0]);
+   let q=a+' ('+ig.map(quote).join(' OR ')+')';
    if(extra)q+=' '+quote(extra);
    out.push({label:'X · Issue-focused search '+(ii+1),q});
   });
  }
  if(mode==='positive'||mode==='all'){
   chunks(c.positive,4).forEach((ig,ii)=>{
-   const ag=c.anchor.slice(0,3);
-   let q='('+ag.map(quote).join(' OR ')+') ('+ig.map(quote).join(' OR ')+')';
+   let q=xAnchorQuery(c.anchor[0])+' ('+ig.map(quote).join(' OR ')+')';
    if(extra)q+=' '+quote(extra);
    out.push({label:'X · Positive updates '+(ii+1),q});
   });
