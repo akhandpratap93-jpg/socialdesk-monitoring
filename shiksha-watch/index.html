@@ -159,40 +159,38 @@ function xQueries(c,mode,extra){
  // Ministry category: keep education monitoring separate, and add negative-only
  // searches for the Minister across his other public portfolios and controversies.
  if(c.id==='ministry'){
-  const anchors='('+c.anchor.filter(x=>!(/Pralhad Joshi|Dharmendra Pradhan/i.test(x))).map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
-  let educationTerms=termsFor(c,mode).slice();
-  const educationQuery=()=>anchors+' ('+educationTerms.map(x=>x.startsWith('"')?x:'"'+x+'"').join(' OR ')+')';
-  let eq=educationQuery();
-  while(eq.length>470 && educationTerms.length>4){educationTerms.pop();eq=educationQuery();}
   const names='("Pralhad Joshi" OR "Prahlad Joshi" OR "प्रल्हाद जोशी" OR "प्रहलाद जोशी" OR "ಪ್ರಲ್ಹಾದ್ ಜೋಶಿ" OR "ಪ್ರಹ್ಲಾದ್ ಜೋಶಿ")';
-  // Split by language and portfolio. This avoids one oversized Boolean query
-  // silently dropping Hindi/Kannada terms or requiring every post to mention MNRE.
-  const englishNegative=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','corruption','accountability','resignation'];
-  const hindiNegative=['"आलोचना"','"विवाद"','"आरोप"','"विरोध"','"प्रदर्शन"','"लापरवाही"','"विफलता"','"भ्रष्टाचार"','"जवाबदेही"','"सवाल उठाए"'];
-  const kannadaNegative=['"ವಿಮರ್ಶೆ"','"ವಿವಾದ"','"ಆರೋಪ"','"ಪ್ರತಿಭಟನೆ"','"ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿಫಲತೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಹೊಣೆಗಾರಿಕೆ"','"ಆಕ್ಷೇಪ"','"ಆಕ್ರೋಶ"'];
-  const consumerEn=['"consumer affairs"','"consumer protection"','"consumer rights"','"food and public distribution"','PDS','ration','"food inflation"'];
-  const consumerHi=['"उपभोक्ता मामले"','"उपभोक्ता अधिकार"','"सार्वजनिक वितरण प्रणाली"','राशन','"महंगाई"'];
-  const consumerKn=['"ಗ್ರಾಹಕ ವ್ಯವಹಾರ"','"ಗ್ರಾಹಕರ ಹಕ್ಕು"','"ಸಾರ್ವಜನಿಕ ವಿತರಣೆ"','"ಪಡಿತರ"','"ಬೆಲೆ ಏರಿಕೆ"'];
-  const energyEn=['"renewable energy"','"new and renewable energy"','MNRE','"solar energy"','"solar power"','"PM Surya Ghar"'];
-  const energyHi=['"नवीकरणीय ऊर्जा"','"सौर ऊर्जा"','"सौर बिजली"','"सौर योजना"'];
-  const energyKn=['"ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ"','"ಸೌರಶಕ್ತಿ"','"ಸೌರ ವಿದ್ಯುತ್"','"ಸೌರ ಯೋಜನೆ"'];
+  const educationAnchors='("Ministry of Education" OR "Education Ministry" OR "Higher Education" OR "Department of School Education" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS OR "शिक्षा मंत्रालय" OR "ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ")';
+  const en=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','fraud','corruption','misconduct','irregularity','"public outrage"','"demand for resignation"','accountability','"under scrutiny"','"failed to respond"','"unfulfilled promises"','"project delay"','"subsidy pending"','"consumer complaint"','"ration irregularities"','"price rise"','"unfair trade practice"','"food shortage"','"paper leak"','"exam cancellation"','"institutional negligence"','"scholarship delay"','"data breach"','"court order"','investigation'];
+  const hi=['"आलोचना"','"विवाद"','"आरोप"','"विरोध"','"प्रदर्शन"','"लापरवाही"','"विफलता"','"घोटाला"','"धोखाधड़ी"','"भ्रष्टाचार"','"अनियमितता"','"जनता में आक्रोश"','"इस्तीफे की मांग"','"जवाबदेही"','"सवालों के घेरे में"','"जवाब देने से बच"','"वादे अधूरे"','"परियोजना में देरी"','"सब्सिडी लंबित"','"उपभोक्ता शिकायत"','"राशन अनियमितता"','"महंगाई"','"खाद्य कमी"','"पेपर लीक"','"परीक्षा रद्द"','"छात्र प्रदर्शन"','"संस्थागत लापरवाही"','"छात्रवृत्ति में देरी"','"डेटा लीक"','"जांच"'];
+  const kn=['"ವಿಮರ್ಶೆ"','"ವಿವಾದ"','"ಆರೋಪ"','"ಪ್ರತಿಭಟನೆ"','"ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿಫಲತೆ"','"ಹಗರಣ"','"ವಂಚನೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಅಕ್ರಮ"','"ಜನರ ಆಕ್ರೋಶ"','"ರಾಜೀನಾಮೆಗೆ ಆಗ್ರಹ"','"ಹೊಣೆಗಾರಿಕೆ"','"ಪ್ರಶ್ನೆಗಳ ಸುಳಿಯಲ್ಲಿ"','"ಉತ್ತರ ನೀಡಿಲ್ಲ"','"ಭರವಸೆ ಈಡೇರಿಲ್ಲ"','"ಯೋಜನೆ ವಿಳಂಬ"','"ಸಹಾಯಧನ ಬಾಕಿ"','"ಗ್ರಾಹಕರ ದೂರು"','"ಪಡಿತರ ಅಕ್ರಮ"','"ಬೆಲೆ ಏರಿಕೆ"','"ಆಹಾರ ಕೊರತೆ"','"ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ ಸೋರಿಕೆ"','"ಪರೀಕ್ಷೆ ರದ್ದು"','"ವಿದ್ಯಾರ್ಥಿ ಪ್ರತಿಭಟನೆ"','"ಸಂಸ್ಥೆಯ ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿದ್ಯಾರ್ಥಿವೇತನ ವಿಳಂಬ"','"ಡೇಟಾ ಸೋರಿಕೆ"','"ತನಿಖೆ"'];
+  const consumer=['"consumer affairs"','"consumer protection"','"consumer rights"','"food and public distribution"','PDS','ration','"food inflation"','"consumer complaint"','"unfair trade practice"','"ration irregularities"','"food shortage"','"price rise"','"उपभोक्ता मामले"','"उपभोक्ता अधिकार"','"सार्वजनिक वितरण प्रणाली"','राशन','"महंगाई"','"राशन अनियमितता"','"ग्राहक ವ್ಯವಹಾರ"','"ಗ್ರಾಹಕರ ಹಕ್ಕು"','"ಸಾರ್ವಜನಿಕ ವಿತರಣೆ"','"ಪಡಿತರ"','"ಬೆಲೆ ಏರಿಕೆ"','"ಪಡಿತರ ಅಕ್ರಮ"'];
+  const energy=['"renewable energy"','"new and renewable energy"','MNRE','"solar energy"','"solar power"','"PM Surya Ghar"','"solar project delay"','"subsidy pending"','"vendor fraud"','"power curtailment"','"transmission bottleneck"','"project cancellation"','"नवीकरणीय ऊर्जा"','"सौर ऊर्जा"','"सौर बिजली"','"सौर योजना"','"परियोजना में देरी"','"सब्सिडी लंबित"','"बिजली कटौती"','"ट्रांसमिशन बाधा"','"ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ"','"ಸೌರಶಕ್ತಿ"','"ಸೌರ ವಿದ್ಯುತ್"','"ಸೌರ ಯೋಜನೆ"','"ಯೋಜನೆ ವಿಳಂಬ"','"ಸಹಾಯಧನ ಬಾಕಿ"','"ವಿದ್ಯುತ್ ಕಡಿತ"','"ಪ್ರಸರಣ ಅಡಚಣೆ"'];
   const caseTerms=['"Bilkis Bano"','"ಬಿಲ್ಕಿಸ್ ಬಾನು"','"ಬಿಲ್ಕಿಸ್ ಬಾನು ಪ್ರಕರಣ"','"बिलकिस बानो"','"बिल्किस बानो"','"बिलकिस बानो मामला"'];
-  const build=(base,terms)=>names+' ('+base.join(' OR ')+') ('+terms.join(' OR ')+')';
-  const results=[
-   {label:'X · Ministry of Education — negative / issue monitoring',q:eq},
-   {label:'X · Pralhad Joshi — English negative coverage',q:names+' ('+englishNegative.join(' OR ')+')'},
-   {label:'X · Pralhad Joshi — हिंदी नकारात्मक खबरें',q:names+' ('+hindiNegative.join(' OR ')+')'},
-   {label:'X · Pralhad Joshi — ಕನ್ನಡ ನಕಾರಾತ್ಮಕ ಸುದ್ದಿಗಳು',q:names+' ('+kannadaNegative.join(' OR ')+')'},
-   {label:'X · Consumer Affairs / PDS — negative (English)',q:build(consumerEn,englishNegative.slice(0,8))},
-   {label:'X · उपभोक्ता मामले / राशन — नकारात्मक खबरें',q:build(consumerHi,hindiNegative.slice(0,7))},
-   {label:'X · ಗ್ರಾಹಕ ವ್ಯವಹಾರ / ಪಡಿತರ — ನಕಾರಾತ್ಮಕ ಸುದ್ದಿ',q:build(consumerKn,kannadaNegative.slice(0,7))},
-   {label:'X · Renewable Energy / MNRE — negative (English)',q:build(energyEn,englishNegative.slice(0,8))},
-   {label:'X · नवीकरणीय ऊर्जा / सौर योजना — नकारात्मक खबरें',q:build(energyHi,hindiNegative.slice(0,7))},
-   {label:'X · ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ / ಸೌರಶಕ್ತಿ — ನಕಾರಾತ್ಮಕ ಸುದ್ದಿ',q:build(energyKn,kannadaNegative.slice(0,7))},
-   {label:'X · Bilkis Bano case — minister name references',q:compact(caseTerms)}
-  ];
+  const pack=(label,base,terms)=>{
+   const out=[];let group=[];
+   for(const term of terms){
+    const candidate=group.concat(term);
+    const q=base+' ('+candidate.join(' OR ')+')';
+    if(q.length>465 && group.length){out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});group=[term];}
+    else group=candidate;
+   }
+   if(group.length)out.push({label:label+(out.length?' · '+(out.length+1):''),q:base+' ('+group.join(' OR ')+')'});
+   return out;
+  };
+  let educationTerms=termsFor(c,mode).map(x=>x.startsWith('"')?x:'"'+x+'"');
+  const educationQuery='('+educationAnchors.slice(1,-1)+') ('+educationTerms.join(' OR ')+')';
+  const results=[];
+  results.push(...pack('X · Ministry of Education — negative / issue terms',educationAnchors,educationTerms));
+  results.push(...pack('X · Pralhad Joshi — English negative / issue words',names,en));
+  results.push(...pack('X · Pralhad Joshi — हिंदी नकारात्मक / मुद्दे',names,hi));
+  results.push(...pack('X · Pralhad Joshi — ಕನ್ನಡ ನಕಾರಾತ್ಮಕ / ಸಮಸ್ಯೆಗಳು',names,kn));
+  // Portfolio queries require only the name plus relevant portfolio/problem vocabulary.
+  // They do NOT require a third mandatory sentiment group, so issue reports are less likely to be missed.
+  results.push(...pack('X · Pralhad Joshi — Consumer Affairs / PDS issue discovery',names,consumer));
+  results.push(...pack('X · Pralhad Joshi — Renewable Energy / MNRE issue discovery',names,energy));
+  results.push(...pack('X · Bilkis Bano case — minister name references',names,caseTerms));
   if(extra)results.forEach(x=>{if(x.q.length+extra.length+3<=470)x.q+=' "'+extra.replace(/"/g,'')+'"'});
-
   return results;
  }
  // Other categories retain one compact issue-focused query.
