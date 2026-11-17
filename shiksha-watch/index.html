@@ -159,7 +159,7 @@ function xQueries(c,mode,extra){
  // Ministry category: keep education monitoring separate, and add negative-only
  // searches for the Minister across his other public portfolios and controversies.
  if(c.id==='ministry'){
-  const names='("Pralhad Joshi" OR "Prahlad Joshi" OR "प्रल्हाद जोशी" OR "प्रहलाद जोशी" OR "ಪ್ರಲ್ಹಾದ್ ಜೋಶಿ" OR "ಪ್ರಹ್ಲಾದ್ ಜೋಶಿ")';
+  const names='("Pralhad Joshi" OR "Prahlad Joshi" OR "प्रल्हाद जोशी" OR "प्रहलाद जोशी" OR "ಪ್ರಲ್ಹಾದ್ ಜೋಶಿ" OR "ಪ್ರಹ್ಲಾದ್ ಜೋಶಿ" OR "ಪ್ರಲ್ಹಾದ ಜೋಶಿ")';
   const educationAnchors='("Ministry of Education" OR "Education Ministry" OR "Higher Education" OR "Department of School Education" OR UGC OR AICTE OR NTA OR NCERT OR CBSE OR NIOS OR NCTE OR KVS OR NVS OR "शिक्षा मंत्रालय" OR "ಶಿಕ್ಷಣ ಸಚಿವಾಲಯ")';
   const en=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','fraud','corruption','misconduct','irregularity','"public outrage"','"demand for resignation"','accountability','"under scrutiny"','"failed to respond"','"unfulfilled promises"','"project delay"','"subsidy pending"','"consumer complaint"','"ration irregularities"','"price rise"','"unfair trade practice"','"food shortage"','"paper leak"','"exam cancellation"','"institutional negligence"','"scholarship delay"','"data breach"','"court order"','investigation'];
   const hi=['"आलोचना"','"विवाद"','"आरोप"','"विरोध"','"प्रदर्शन"','"लापरवाही"','"विफलता"','"घोटाला"','"धोखाधड़ी"','"भ्रष्टाचार"','"अनियमितता"','"जनता में आक्रोश"','"इस्तीफे की मांग"','"जवाबदेही"','"सवालों के घेरे में"','"जवाब देने से बच"','"वादे अधूरे"','"परियोजना में देरी"','"सब्सिडी लंबित"','"उपभोक्ता शिकायत"','"राशन अनियमितता"','"महंगाई"','"खाद्य कमी"','"पेपर लीक"','"परीक्षा रद्द"','"छात्र प्रदर्शन"','"संस्थागत लापरवाही"','"छात्रवृत्ति में देरी"','"डेटा लीक"','"जांच"'];
@@ -185,6 +185,14 @@ function xQueries(c,mode,extra){
   results.push(...pack('X · Pralhad Joshi — English negative / issue words',names,en));
   results.push(...pack('X · Pralhad Joshi — हिंदी नकारात्मक / मुद्दे',names,hi));
   results.push(...pack('X · Pralhad Joshi — ಕನ್ನಡ ನಕಾರಾತ್ಮಕ / ಸಮಸ್ಯೆಗಳು',names,kn));
+  // Separate issue-discovery searches: name + issue vocabulary, without requiring
+  // a sentiment label. These catch reports phrased as questions, delays or complaints.
+  const discoverEn=['question','questions','query','reply','response','complaint','problem','issue','demand','review','inquiry','probe','investigation','delay','pending','shortage','dispute','notice','court','hearing','decision','implementation'];
+  const discoverHi=['सवाल','प्रश्न','जवाब','जवाब मांगा','शिकायत','समस्या','मुद्दा','मांग','जांच','पड़ताल','देरी','लंबित','कमी','विवाद','नोटिस','अदालत','सुनवाई','फैसला','क्रियान्वयन'];
+  const discoverKn=['ಪ್ರಶ್ನೆ','ಪ್ರಶ್ನೆಗಳು','ಉತ್ತರ','ಪ್ರತಿಕ್ರಿಯೆ','ದೂರು','ಸಮಸ್ಯೆ','ವಿಷಯ','ಬೇಡಿಕೆ','ತನಿಖೆ','ವಿಚಾರಣೆ','ವಿಳಂಬ','ಬಾಕಿ','ಕೊರತೆ','ವಿವಾದ','ನೋಟಿಸ್','ನ್ಯಾಯಾಲಯ','ನಿರ್ಧಾರ','ಅನುಷ್ಠಾನ'];
+  results.push(...pack('X · Pralhad Joshi — English issue discovery (not sentiment-dependent)',names,discoverEn));
+  results.push(...pack('X · Pralhad Joshi — हिंदी मुद्दों की खोज (नकारात्मक शब्द जरूरी नहीं)',names,discoverHi));
+  results.push(...pack('X · Pralhad Joshi — ಕನ್ನಡ ವಿಷಯಗಳ ಹುಡುಕಾಟ (ನಕಾರಾತ್ಮಕ ಪದ ಕಡ್ಡಾಯವಲ್ಲ)',names,discoverKn));
   // Portfolio queries require only the name plus relevant portfolio/problem vocabulary.
   // They do NOT require a third mandatory sentiment group, so issue reports are less likely to be missed.
   results.push(...pack('X · Pralhad Joshi — Consumer Affairs / PDS issue discovery',names,consumer));
