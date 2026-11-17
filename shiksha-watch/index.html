@@ -165,25 +165,34 @@ function xQueries(c,mode,extra){
   let eq=educationQuery();
   while(eq.length>470 && educationTerms.length>4){educationTerms.pop();eq=educationQuery();}
   const names='("Pralhad Joshi" OR "Prahlad Joshi" OR "प्रल्हाद जोशी" OR "प्रहलाद जोशी" OR "ಪ್ರಲ್ಹಾದ್ ಜೋಶಿ" OR "ಪ್ರಹ್ಲಾದ್ ಜೋಶಿ")';
-  // Search negative language independently of portfolio words, so a post is not
-  // lost just because it criticises the Minister without naming MNRE/solar etc.
-  const negativeTerms=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','corruption','accountability','resignation','"minister silent"','"ವಿಮರ್ಶೆ"','"ವಿವಾದ"','"ಆರೋಪ"','"ಪ್ರತಿಭಟನೆ"','"ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿಫಲತೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಹೊಣೆಗಾರಿಕೆ"','"ಆಕ್ಷೇಪ"','"ಆಕ್ರೋಶ"','"आलोचना"','"विवाद"','"आरोप"','"विरोध"','"प्रदर्शन"','"लापरवाही"','"विफलता"','"भ्रष्टाचार"','"जवाबदेही"','"सवाल उठाए"'];
-  const consumerTerms=['"consumer affairs"','"consumer protection"','"consumer rights"','"food and public distribution"','PDS','ration','"food inflation"','"ಗ್ರಾಹಕ ವ್ಯವಹಾರ"','"ಗ್ರಾಹಕರ ಹಕ್ಕು"','"ಸಾರ್ವಜನಿಕ ವಿತರಣೆ"','"ಪಡಿತರ"','"ಬೆಲೆ ಏರಿಕೆ"','"उपभोक्ता मामले"','"उपभोक्ता अधिकार"','"सार्वजनिक वितरण प्रणाली"','राशन','"महंगai"'];
-  const energyTerms=['"renewable energy"','"new and renewable energy"','MNRE','"solar energy"','"solar power"','"PM Surya Ghar"','"ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ"','"ಸೌರಶಕ್ತಿ"','"ಸೌರ ವಿದ್ಯುತ್"','"ಸೌರ ಯೋಜನೆ"','"नवीकरणीय ऊर्जा"','"सौर ऊर्जा"','"सौर बिजली"','"सौर योजना"'];
+  // Split by language and portfolio. This avoids one oversized Boolean query
+  // silently dropping Hindi/Kannada terms or requiring every post to mention MNRE.
+  const englishNegative=['criticism','controversy','allegation','backlash','protest','negligence','failure','scam','corruption','accountability','resignation'];
+  const hindiNegative=['"आलोचना"','"विवाद"','"आरोप"','"विरोध"','"प्रदर्शन"','"लापरवाही"','"विफलता"','"भ्रष्टाचार"','"जवाबदेही"','"सवाल उठाए"'];
+  const kannadaNegative=['"ವಿಮರ್ಶೆ"','"ವಿವಾದ"','"ಆರೋಪ"','"ಪ್ರತಿಭಟನೆ"','"ನಿರ್ಲಕ್ಷ್ಯ"','"ವಿಫಲತೆ"','"ಭ್ರಷ್ಟಾಚಾರ"','"ಹೊಣೆಗಾರಿಕೆ"','"ಆಕ್ಷೇಪ"','"ಆಕ್ರೋಶ"'];
+  const consumerEn=['"consumer affairs"','"consumer protection"','"consumer rights"','"food and public distribution"','PDS','ration','"food inflation"'];
+  const consumerHi=['"उपभोक्ता मामले"','"उपभोक्ता अधिकार"','"सार्वजनिक वितरण प्रणाली"','राशन','"महंगाई"'];
+  const consumerKn=['"ಗ್ರಾಹಕ ವ್ಯವಹಾರ"','"ಗ್ರಾಹಕರ ಹಕ್ಕು"','"ಸಾರ್ವಜನಿಕ ವಿತರಣೆ"','"ಪಡಿತರ"','"ಬೆಲೆ ಏರಿಕೆ"'];
+  const energyEn=['"renewable energy"','"new and renewable energy"','MNRE','"solar energy"','"solar power"','"PM Surya Ghar"'];
+  const energyHi=['"नवीकरणीय ऊर्जा"','"सौर ऊर्जा"','"सौर बिजली"','"सौर योजना"'];
+  const energyKn=['"ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ"','"ಸೌರಶಕ್ತಿ"','"ಸೌರ ವಿದ್ಯುತ್"','"ಸೌರ ಯೋಜನೆ"'];
   const caseTerms=['"Bilkis Bano"','"ಬಿಲ್ಕಿಸ್ ಬಾನು"','"ಬಿಲ್ಕಿಸ್ ಬಾನು ಪ್ರಕರಣ"','"बिलकिस बानो"','"बिल्किस बानो"','"बिलकिस बानो मामला"'];
-  const compact=(terms)=>{let a=terms.slice();let q=names+' ('+a.join(' OR ')+')';while(q.length>470&&a.length>2){a.pop();q=names+' ('+a.join(' OR ')+')';}return q;};
-  const allIssue=compact(negativeTerms);
-  const consumer=compact(consumerTerms);
-  const energy=compact(energyTerms);
-  const bilkis=compact(caseTerms);
+  const build=(base,terms)=>names+' ('+base.join(' OR ')+') ('+terms.join(' OR ')+')';
   const results=[
    {label:'X · Ministry of Education — negative / issue monitoring',q:eq},
-   {label:'X · Pralhad Joshi — negative news (Hindi + Kannada + English)',q:allIssue},
-   {label:'X · Pralhad Joshi — Consumer Affairs / PDS mentions',q:consumer},
-   {label:'X · Pralhad Joshi — Renewable Energy / MNRE mentions',q:energy},
-   {label:'X · Pralhad Joshi — Bilkis Bano case references',q:bilkis}
+   {label:'X · Pralhad Joshi — English negative coverage',q:names+' ('+englishNegative.join(' OR ')+')'},
+   {label:'X · Pralhad Joshi — हिंदी नकारात्मक खबरें',q:names+' ('+hindiNegative.join(' OR ')+')'},
+   {label:'X · Pralhad Joshi — ಕನ್ನಡ ನಕಾರಾತ್ಮಕ ಸುದ್ದಿಗಳು',q:names+' ('+kannadaNegative.join(' OR ')+')'},
+   {label:'X · Consumer Affairs / PDS — negative (English)',q:build(consumerEn,englishNegative.slice(0,8))},
+   {label:'X · उपभोक्ता मामले / राशन — नकारात्मक खबरें',q:build(consumerHi,hindiNegative.slice(0,7))},
+   {label:'X · ಗ್ರಾಹಕ ವ್ಯವಹಾರ / ಪಡಿತರ — ನಕಾರಾತ್ಮಕ ಸುದ್ದಿ',q:build(consumerKn,kannadaNegative.slice(0,7))},
+   {label:'X · Renewable Energy / MNRE — negative (English)',q:build(energyEn,englishNegative.slice(0,8))},
+   {label:'X · नवीकरणीय ऊर्जा / सौर योजना — नकारात्मक खबरें',q:build(energyHi,hindiNegative.slice(0,7))},
+   {label:'X · ನವೀಕರಿಸಬಹುದಾದ ಇಂಧನ / ಸೌರಶಕ್ತಿ — ನಕಾರಾತ್ಮಕ ಸುದ್ದಿ',q:build(energyKn,kannadaNegative.slice(0,7))},
+   {label:'X · Bilkis Bano case — minister name references',q:compact(caseTerms)}
   ];
   if(extra)results.forEach(x=>{if(x.q.length+extra.length+3<=470)x.q+=' "'+extra.replace(/"/g,'')+'"'});
+
   return results;
  }
  // Other categories retain one compact issue-focused query.
