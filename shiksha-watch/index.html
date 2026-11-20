@@ -76,13 +76,12 @@ function makeQueries(c,sent,extra,lang){
  const maxEncoded=900;
  const anchorGroups=[];
  let currentAnchors=[];
- for(const term of terms){
-  for(const anchor of anchors){
-   const candidate='('+currentAnchors.concat(anchor).join(' OR ')+') ('+term+')'+extraText;
-   if(encodeURIComponent(candidate).length>maxEncoded&&currentAnchors.length){
-    anchorGroups.push(currentAnchors);currentAnchors=[anchor];
-   }else if(!currentAnchors.includes(anchor)){currentAnchors.push(anchor);}
-  }
+ const sample=terms[0]||'update';
+ for(const anchor of anchors){
+  const candidate='('+currentAnchors.concat(anchor).join(' OR ')+') ('+sample+')'+extraText;
+  if(encodeURIComponent(candidate).length>maxEncoded&&currentAnchors.length){
+   anchorGroups.push(currentAnchors);currentAnchors=[anchor];
+  }else{currentAnchors.push(anchor);}
  }
  if(currentAnchors.length)anchorGroups.push(currentAnchors);
  if(!anchorGroups.length)anchorGroups.push(anchors);
