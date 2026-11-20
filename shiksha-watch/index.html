@@ -98,11 +98,10 @@ function renderLinks(){
  $("results").innerHTML=links.join("")||'<div class="muted">No queries found for this selection.</div>';
 }
 function syncSelected(){$("categoryList").querySelectorAll("[data-cat]").forEach(b=>b.classList.toggle("selected",b.dataset.cat===$("category").value));}
-function $(id){return document.getElementById(id);}
 function renderCategories(){
  $("category").innerHTML=categories.map(c=>'<option value="'+c.id+'">'+c.name+"</option>").join("");
- $("categoryList").innerHTML=categories.map(c=>'<button class="category" data-cat="'+c.id+'"><strong>'+c.name+"</strong><span>"+c.desc+"</span></button>").join("");
- $("categoryList").querySelectorAll("[data-cat]").forEach(b=>b.addEventListener("click",()=>{$("category").value=b.dataset.cat;renderLinks();syncSelected();}));
+ $("categoryList").innerHTML=categories.map(c=>'<div class="category" data-cat="'+c.id+'"><strong>'+c.name+"</strong><span>"+c.desc+'</span><div class="actions"><button type="button" class="language-choice" data-lang-cat="'+c.id+'" data-lang="hi">हिंदी</button><button type="button" class="language-choice" data-lang-cat="'+c.id+'" data-lang="en">English</button></div></div>').join("");
+ $("categoryList").querySelectorAll("[data-lang-cat]").forEach(b=>b.addEventListener("click",()=>{$("category").value=b.dataset.langCat;$("language").value=b.dataset.lang;renderLinks();syncSelected();}));
  $("keywordLibrary").innerHTML=categories.map(c=>'<div class="panel"><h3>'+c.name+"</h3><p class='muted small'>"+c.desc+"</p>"+langs.map(([k,l])=>'<strong>'+l+'</strong><div class="chips">'+c.anchor[k].concat(c.negative[k],c.positive[k],c.neutral[k]).map(x=>'<span class="chip">'+x+"</span>").join("")+"</div>").join("")+"</div>").join("");
  $("catCount").textContent=categories.length;syncSelected();
 }
