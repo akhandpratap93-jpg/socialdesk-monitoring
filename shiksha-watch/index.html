@@ -57,37 +57,15 @@ const $=id=>document.getElementById(id);
 const langs=[["en","English"],["hi","हिंदी"]];
 function getTerms(c,sent,lang){return sent==="all"?[...c.negative[lang],...c.positive[lang],...c.neutral[lang]]:c[sent][lang]||[];}
 function makeQueries(c,sent,extra,lang){
- const terms=getTerms(c,sent,lang), anchors=c.anchor[lang]||[], out=[];
- const maxEncoded=700;
+ const terms=getTerms(c,sent,lang), anchors=c.anchor[lang]||[];
  const clean=x=>String(x).replace(/"/g,"").trim();
  const quote=x=>'"'+clean(x)+'"';
- const extraPart=extra?' "'+clean(extra)+'"':"";
- const add=(anchorSet,termSet)=>{
-  const q="("+anchorSet.map(quote).join(" OR ")+") ("+termSet.map(quote).join(" OR ")+")"+extraPart;
-  if(encodeURIComponent(q).length<=maxEncoded){out.push({q,label:termSet.length===1?clean(termSet[0]):clean(termSet[0])+" + "+(termSet.length-1)+" more"});return true;}
-  return false;
- };
- // Greedily pack keywords while checking the final encoded query length.
- for(const term of terms){
-  let placed=false;
-  for(let i=0;i<anchors.length;i++){
-   const anchor=anchors[i];
-   const last=out.length?out[out.length-1]:null;
-   if(last&&last._anchor===anchor){
-    const previous=last._terms;
-    if(add([anchor],previous.concat(term))){out.pop();out.push({q:"("+quote(anchor)+") ("+previous.concat(term).map(quote).join(" OR ")+")"+extraPart,label:clean(previous[0])+" + "+(previous.length)+" more",_anchor:anchor,_terms:previous.concat(term)});placed=true;break;}
-   }
-   if(add([anchor],[term])){const item=out[out.length-1];item._anchor=anchor;item._terms=[term];placed=true;break;}
-  }
-  if(!placed){
-   // Fallback: single keyword with the shortest relevant anchor, still checked.
-   const anchor=anchors[0]||"education";
-   const q="("+quote(anchor)+") "+quote(term)+extraPart;
-   if(encodeURIComponent(q).length<=maxEncoded)out.push({q,label:clean(term)});
-   else out.push({q:"("+quote(anchor)+") "+quote(term),label:clean(term)});
-  }
- }
- return out.map(({q,label})=>({q,label}));
+ const anchorPart=anchors.map(quote).join(" OR ");
+ const termPart=terms.map(quote).join(" OR ");
+ const extraPart=extra?' AND "'+clean(extra)+'"':"";
+ // One combined query per category and language: never expose keyword-level links.
+ const q="("+anchorPart+") ("+termPart+")"+extraPart;
+ return [{q,label:lang==="hi"?"हिंदी — सभी संबंधित keywords":"English — all related keywords"}];
 }
 function periodUrl(url){const p=$("period").value;if(p==="any")return url;const u=new URL(url);u.searchParams.set("tbs",p==="d"?"qdr:d":p==="w"?"qdr:w":"qdr:m");return u.toString();}
 function renderLinks(){
