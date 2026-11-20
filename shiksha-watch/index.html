@@ -70,12 +70,32 @@ function getTerms(c,sent,lang){if(sent==='all')return [...c.negative[lang],...c.
 function makeQueries(c,sent,extra,lang){
  const out=[];
  const label=langs.find(x=>x[0]===lang)?.[1]||'English';
- {
-  const anchors=c.anchor[lang];const terms=getTerms(c,sent,lang);
-  const anchor='('+anchors.join(' OR ')+')';
+ const anchors=c.anchor[lang]||[];
+ const terms=getTerms(c,sent,lang);
+ const extraText=extra?' "'+extra.replace(/"/g,'')+'"':'';
+ const maxEncoded=900;
+ const anchorGroups=[];
+ let currentAnchors=[];
+ for(const term of terms){
+  for(const anchor of anchors){
+   const candidate='('+currentAnchors.concat(anchor).join(' OR ')+') ('+term+')'+extraText;
+   if(encodeURIComponent(candidate).length>maxEncoded&&currentAnchors.length){
+    anchorGroups.push(currentAnchors);currentAnchors=[anchor];
+   }else if(!currentAnchors.includes(anchor)){currentAnchors.push(anchor);}
+  }
+ }
+ if(currentAnchors.length)anchorGroups.push(currentAnchors);
+ if(!anchorGroups.length)anchorGroups.push(anchors);
+ for(const anchorSet of anchorGroups){
+  const anchor='('+anchorSet.join(' OR ')+')';
   let batch=[];
-  const emit=()=>{if(!batch.length)return;let q=anchor+' ('+batch.join(' OR ')+')';if(extra)q+=' "'+extra.replace(/"/g,'')+'"';out.push({label:label+' · '+(sent==='negative'?'Negative priority':sent==='positive'?'Positive':sent==='neutral'?'Neutral':'All updates'),q,lang});batch=[];};
-  for(const term of terms){const test=anchor+' ('+batch.concat(term).join(' OR ')+')';if(encodeURIComponent(test).length>900&&batch.length)emit();batch.push(term);}
+  const emit=()=>{if(!batch.length)return;const q=anchor+' ('+batch.join(' OR ')+')'+extraText;out.push({label:label+' · '+(sent==='negative'?'Negative priority':sent==='positive'?'Positive':sent==='neutral'?'Neutral':'All updates'),q,lang});batch=[];};
+  for(const term of terms){
+   const test=anchor+' ('+batch.concat(term).join(' OR ')+')'+extraText;
+   if(encodeURIComponent(test).length>maxEncoded&&batch.length)emit();
+   batch.push(term);
+   if(encodeURIComponent(anchor+' ('+batch.join(' OR ')+')'+extraText).length>maxEncoded&&batch.length===1)emit();
+  }
   emit();
  }
  return out;
